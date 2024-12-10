@@ -1,8 +1,12 @@
-function show(msg){
-console.log(msg);
+function show(msg) {
+    console.log(msg);
 }
-const body = document.body;
-var app = document.createElement('div');
-app.setAttribute('background-color','red');
-app.appendChild(document.createTextNode('hi'));
-body.appendChild(app);
+function loadPage() {
+    show("Carregando");
+    var app = document.createElement('div');
+    app.id = "App";
+    app.setAttribute('style', 'background:#ffdddd');
+    app.appendChild(document.createTextNode('hi'));
+    document.body.append(app);
+    show("Carregou");
+}
