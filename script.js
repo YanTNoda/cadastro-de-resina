@@ -1,3 +1,6 @@
+let APP;
+let TUDO;
+
 class Fornecedor {
     constructor(nome) {
         this.nome = nome;
@@ -91,32 +94,26 @@ class Tudo {
         this.pecas = pecas;
         this.vendas = vendas;
     }
-    push_fornecedor(fornecedor) {
-        this.fornecedores.push(fornecedor);
-    }
+    push_fornecedor(fornecedor) { this.fornecedores.push(fornecedor); }
+    push_resina(resina) { this.resinas.push(resina); }
+    push_pigmento(pigmento) { this.pigmentos.push(pigmento); }
+    push_molde(molde) { this.moldes.push(molde); }
+    push_extra(extra) { this.extras.push(extra); }
+    push_funcionario(funcionario) { this.funcionarios.push(funcionario); }
+    push_peca(peca) { this.pecas.push(peca); }
+    push_venda(venda) { this.vendas.push(venda); }
 
-    push_resina(resina) {
-        this.resinas.push(resina);
-    }
-    push_pigmento(pigmento) {
-        this.pigmentos.push(pigmento);
-    }
-    push_molde(molde) {
-        this.moldes.push(molde);
-    }
-    push_extra(extra) {
-        this.extras.push(extra);
-    }
-    push_funcionario(funcionario) {
-        this.funcionarios.push(funcionario);
-    }
-    push_peca(peca) {
-        this.pecas.push(peca);
-    }
-    push_venda(venda) {
-        this.vendas.push(venda);
-    }
-    
+    remove_fornecedor(index) { this.fornecedores.splice(index, 1); }
+    remove_resina(index) { this.resinas.splice(index, 1); }
+    remove_pigmento(index) { this.pigmentos.splice(index, 1); }
+    remove_molde(index) { this.moldes.splice(index, 1); }
+    remove_extra(index) { this.extras.splice(index, 1); }
+    remove_funcionario(index) { this.funcionarios.splice(index, 1); }
+    remove_peca(index) { this.pecas.splice(index, 1); }
+    remove_venda(index) { this.vendas.splice(index, 1); }
+
+
+
 }
 function save_tudo(tudo) {
     localStorage.setItem('fulldata', JSON.stringify(tudo));
@@ -143,19 +140,9 @@ function load_tudo() {
 function show(msg) {
     console.log(msg);
 }
-function loadPage() {
-    show("Carregando");
-    var app = document.createElement('div');
-    app.id = "App";
-    app.setAttribute('style', 'background:#ffdddd');
-    app.appendChild(document.createTextNode('hi'));
-    document.body.append(app);
-    var t = load_tudo();
-    var forn = new Fornecedor("fornecedor");
+function push_default_vals(t) {
+    var forn = new Fornecedor("fornecedor generico");
     t.push_fornecedor(forn);
-    show(forn)
-    show(JSON.stringify(forn));
-    show(JSON.parse(localStorage.getItem("tudo")));
     var res = new Resina(forn, 'ultrauv', 240, 1000);
     t.push_resina(res);
     var pig = new Pigmento(forn, 'white galaxy', 40, 20);
@@ -172,9 +159,70 @@ function loadPage() {
     t.push_peca(peca);
     var venda = new Venda(peca, 90);
     t.push_venda(venda);
-    save_tudo(t);
-    show(JSON.stringify(venda.peca));
-    show(venda.lucro());
-    show(venda.margem_de_lucro());
+
+}
+function addFornecedor(ev) {
+    console.log(ev);
+    console.log(typeof (ev));
+    var field = document.getElementById('fornecedor-nome');
+    if (field===null)return;
+    var nome = field.value;
+    TUDO.push_fornecedor(new Fornecedor(nome));
+    save_tudo(TUDO);
+    updateApp();
+}
+function formFornecedor(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.appendChild(document.createTextNode("Nome:"));
+    var nome = document.createElement("input");
+    nome.id='fornecedor-nome';
+    nome.setAttribute('type', 'text');
+    nome.ariaLabel="Nome";
+    div.appendChild(nome);
+    var btn = document.createElement("button");
+    btn.innerText="Adicionar Fornecedor";
+    btn.addEventListener('click', addFornecedor);
+    div.appendChild(btn);
+}
+function loadFornecedores(app, tudo) {
+    var antigo = document.getElementById('fornecedores');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "fornecedores";
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var th = document.createElement('th');
+    var tbody = document.createElement("tbody");
+    for (var f in tudo.fornecedores) {
+        var row = document.createElement('tr');
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(tudo.fornecedores[f].nome));
+        tbody.appendChild(row);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    th.appendChild(document.createTextNode("Fornecedor"));
+    formFornecedor(div,tudo);
+    app.appendChild(div);
+}
+function updateApp(){    
+    loadFornecedores(APP, TUDO);
+}
+function loadPage() {
+    show("Carregando");
+    APP = document.createElement('div');
+    APP.id = "App";
+    document.body.append(APP);
+    TUDO = load_tudo();
+    save_tudo(TUDO);
+    updateApp();
     show("Carregou");
 }

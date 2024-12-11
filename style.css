@@ -1,5 +1,19 @@
-div{
-    border:solid black 0.2vmin;
-    display:flex;
-    flex:1;
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+div,
+tr,
+th,
+td {
+    border: solid black 0.2vmin;
+    border-radius: 1vmin;
+    display: flex;
+    flex: 1;
+    padding: 0.3vmin;
+}
+
+table {
+    display: block;
 }
