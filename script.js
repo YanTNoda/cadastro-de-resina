@@ -125,7 +125,7 @@ function checkNum(num) {
         if (num === undefined || num === null) {
             return false
         }
-        if (typeof (num) == typeof("") && num.length < 1) {
+        if (typeof (num) == typeof ("") && num.length < 1) {
             return false;
         }
         var x = parseFloat(num);
@@ -136,8 +136,8 @@ function checkNum(num) {
             console.log("Check =>");
             console.log(num);
             console.log(x);
-            console.log("len",num.length,x.length);
-            console.log("type",typeof(num),typeof(x));
+            console.log("len", num.length, x.length);
+            console.log("type", typeof (num), typeof (x));
             return true;
         }
     } catch (e) {
@@ -520,10 +520,153 @@ function loadPigmentos() {
     APP.appendChild(div);
 
 }
+function addMolde(ev) {
+    console.log(ev);
+    console.log(typeof (ev));
+    var field_forn = document.getElementById('molde-fornecedor');
+    if (field_forn === null) return;
+    var field_nome = document.getElementById('molde-nome');
+    if (field_nome === null) return;
+    var field_preco = document.getElementById('molde-preco');
+    if (field_preco === null) return;
+    var field_cavidades = document.getElementById('molde-cavidades');
+    if (field_cavidades === null) return;
+    var field_usos = document.getElementById('molde-usos');
+    if (field_usos === null) return;
+    var forn = field_forn.value;
+    var nome = field_nome.value;
+    var preco = field_preco.value;
+    var cavidades = field_cavidades.value;
+    var usos = field_usos.value;
+
+    if (nome.length <= 3) {
+        alert("Nome de pigmento muito curto");
+        return;
+    }
+    try {
+        if (!checkNum(preco)) {
+            throw new TypeError("");
+        }
+        preco = parseFloat(preco);
+    } catch (e) {
+        alert("Preço preenchido incorretamente");
+        return;
+    }
+    try {
+        if (!checkNum(cavidades)) {
+            throw new TypeError("");
+        }
+        cavidades = parseInt(cavidades);
+    } catch (e) {
+        alert("Peso preenchido incorretamente");
+        return;
+    }
+    try {
+        if (!checkNum(usos)) {
+            throw new TypeError("");
+        }
+        usos = parseInt(usos);
+    } catch (e) {
+        alert("Peso preenchido incorretamente");
+        return;
+    }
+    var molde = new Molde(TUDO.fornecedores[parseInt(forn)], nome, preco, cavidades, usos);
+    TUDO.push_molde(molde);
+    updateApp();
+}
+function formMolde(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.className = 'form';
+    var forn = selectFornecedor('molde-fornecedor');
+    var nome = document.createElement("input");
+    var preco = document.createElement("input");
+    var cavidades = document.createElement("input");
+    var usos = document.createElement("input");
+    nome.id = 'molde-nome';
+    nome.setAttribute('type', 'text');
+    preco.id = 'molde-preco';
+    preco.setAttribute("type", 'number');
+    cavidades.id = 'molde-cavidades';
+    cavidades.setAttribute("type", 'number');
+    usos.id = 'molde-usos';
+    usos.setAttribute("type", 'number');
+
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de molde";
+    div.appendChild(heading);
+    div.appendChild(document.createTextNode("Fornecedor:"));
+    div.appendChild(forn);
+    div.appendChild(document.createTextNode("Nome do Molde:"));
+    div.appendChild(nome);
+    div.appendChild(document.createTextNode("Preço:"));
+    div.appendChild(preco);
+    div.appendChild(document.createTextNode("Cavidades:"));
+    div.appendChild(cavidades);
+    div.appendChild(document.createTextNode("Usos:"));
+    div.appendChild(usos);
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Molde";
+    btn.addEventListener('pointerup', addMolde);
+    div.appendChild(btn);
+}
+function loadMoldes() {
+    var antigo = document.getElementById('moldes');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "moldes";
+    div.className = "panel";
+    var heading = document.createElement("h1");
+    heading.innerText = 'Moldes';
+    div.appendChild(heading);
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var tbody = document.createElement("tbody");
+    for (var f in TUDO.moldes) {
+        var row = document.createElement('tr');
+        var mol = TUDO.moldes[f];
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(mol.fornecedor.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(mol.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(mol.preco));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(mol.cavidades));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(mol.usos));
+        tbody.appendChild(row);
+    }
+    let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Cavidades', 'Usos'];
+    for (var i in headers) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(headers[i]));
+        theadrow.appendChild(th);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    formMolde(div);
+    APP.appendChild(div);
+
+}
+
 function updateApp() {
     loadFornecedores();
+    if(TUDO.fornecedores.length == 0)return;
     loadResinas();
     loadPigmentos();
+    loadMoldes();    
 }
 function loadPage() {
     show("Carregando");
