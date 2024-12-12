@@ -1,5 +1,12 @@
 let APP;
 let TUDO;
+let EVENTS = ['pointerup', 'touchend'];
+
+function addEventListeners(element, f) {
+    for (var i in EVENTS) {
+        element.addEventListener(EVENTS[i], f);
+    }
+}
 
 class Fornecedor {
     constructor(nome) {
@@ -193,6 +200,7 @@ function push_default_vals(t) {
 
 }
 function addFornecedor(ev) {
+    ev.stopImmediatePropagation();
     console.log(ev);
     console.log(typeof (ev));
     var field = document.getElementById('fornecedor-nome');
@@ -220,7 +228,7 @@ function formFornecedor(parent) {
     div.appendChild(nome);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Fornecedor";
-    btn.addEventListener('pointerup', addFornecedor);
+    addEventListeners(btn, addFornecedor);
     div.appendChild(btn);
 }
 
@@ -274,6 +282,7 @@ function selectFornecedor(id) {
     return select;
 }
 function addResina(ev) {
+    ev.stopImmediatePropagation();
     console.log(ev);
     console.log(typeof (ev));
     var field_forn = document.getElementById('resina-fornecedor');
@@ -344,7 +353,7 @@ function formResina(parent) {
     div.appendChild(peso);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Resina";
-    btn.addEventListener('pointerup', addResina);
+    addEventListeners(btn, addResina);
     div.appendChild(btn);
 }
 function loadResinas() {
@@ -396,7 +405,8 @@ function loadResinas() {
     APP.appendChild(div);
 
 }
-function addPigmento(ev) {
+function addPigmento(ev) {    
+    ev.stopImmediatePropagation();
     console.log(ev);
     console.log(typeof (ev));
     var field_forn = document.getElementById('pigmento-fornecedor');
@@ -468,7 +478,7 @@ function formPigmento(parent) {
     div.appendChild(peso);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Pigmento";
-    btn.addEventListener('pointerup', addPigmento);
+    addEventListener(btn, addPigmento);
     div.appendChild(btn);
 }
 function loadPigmentos() {
@@ -521,6 +531,7 @@ function loadPigmentos() {
 
 }
 function addMolde(ev) {
+    ev.stopImmediatePropagation();
     console.log(ev);
     console.log(typeof (ev));
     var field_forn = document.getElementById('molde-fornecedor');
@@ -607,7 +618,7 @@ function formMolde(parent) {
     div.appendChild(usos);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Molde";
-    btn.addEventListener('pointerup', addMolde);
+    addEventListeners(btn, addMolde);
     div.appendChild(btn);
 }
 function loadMoldes() {
@@ -663,10 +674,10 @@ function loadMoldes() {
 
 function updateApp() {
     loadFornecedores();
-    if(TUDO.fornecedores.length == 0)return;
+    if (TUDO.fornecedores.length == 0) return;
     loadResinas();
     loadPigmentos();
-    loadMoldes();    
+    loadMoldes();
 }
 function loadPage() {
     show("Carregando");
