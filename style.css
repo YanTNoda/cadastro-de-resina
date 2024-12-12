@@ -3,7 +3,6 @@ body {
     flex-direction: column;
 }
 
-div,
 tr,
 th,
 td {
@@ -13,7 +12,21 @@ td {
     flex: 1;
     padding: 0.3vmin;
 }
+div{
+    border: solid black 0.2vmin;
+    border-radius: 1vmin;
+    display: flex;
+    flex: 1;
+    padding: 0.3vmin;
+    flex-direction: column;
+}
+div.form{
+    flex-direction: row;
+}
 
 table {
     display: block;
+    position: sticky;
+    overflow: auto;
+    table-layout: auto;
 }

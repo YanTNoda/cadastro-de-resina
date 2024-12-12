@@ -165,8 +165,12 @@ function addFornecedor(ev) {
     console.log(ev);
     console.log(typeof (ev));
     var field = document.getElementById('fornecedor-nome');
-    if (field===null)return;
+    if (field === null) return;
     var nome = field.value;
+    if (nome.length <= 3) {
+        alert("Nome de fornecedor muito curto");
+        return;
+    }
     TUDO.push_fornecedor(new Fornecedor(nome));
     save_tudo(TUDO);
     updateApp();
@@ -176,32 +180,36 @@ function formFornecedor(parent) {
     parent.appendChild(div);
     div.appendChild(document.createTextNode("Nome:"));
     var nome = document.createElement("input");
-    nome.id='fornecedor-nome';
+    nome.id = 'fornecedor-nome';
     nome.setAttribute('type', 'text');
-    nome.ariaLabel="Nome";
+    nome.ariaLabel = "Nome";
     div.appendChild(nome);
     var btn = document.createElement("button");
-    btn.innerText="Adicionar Fornecedor";
-    btn.addEventListener('click', addFornecedor);
+    btn.innerText = "Adicionar Fornecedor";
+    btn.addEventListener('pointerup', addFornecedor);
     div.appendChild(btn);
 }
-function loadFornecedores(app, tudo) {
+
+function loadFornecedores() {
     var antigo = document.getElementById('fornecedores');
     if (antigo !== null) {
         antigo.remove();
     }
     var div = document.createElement('div');
     div.id = "fornecedores";
+    var heading = document.createElement("h1");
+    heading.innerText='Fornecedores';
+    div.appendChild(heading);
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
     var th = document.createElement('th');
     var tbody = document.createElement("tbody");
-    for (var f in tudo.fornecedores) {
+    for (var f in TUDO.fornecedores) {
         var row = document.createElement('tr');
         var cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(tudo.fornecedores[f].nome));
+        cell.appendChild(document.createTextNode(TUDO.fornecedores[f].nome));
         tbody.appendChild(row);
     }
     div.appendChild(table);
@@ -209,12 +217,158 @@ function loadFornecedores(app, tudo) {
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    th.appendChild(document.createTextNode("Fornecedor"));
-    formFornecedor(div,tudo);
-    app.appendChild(div);
+    th.appendChild(document.createTextNode("Nome"));
+    formFornecedor(div);
+    APP.appendChild(div);
 }
-function updateApp(){    
-    loadFornecedores(APP, TUDO);
+function formFornecedor(parent) {
+    var div = document.createElement("div");
+    div.className = 'form';
+    parent.appendChild(div);
+    div.appendChild(document.createTextNode("Nome:"));
+    var nome = document.createElement("input");
+    nome.id = 'fornecedor-nome';
+    nome.setAttribute('type', 'text');
+    nome.ariaLabel = "Nome";
+    div.appendChild(nome);
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Fornecedor";
+    btn.addEventListener('pointerup', addFornecedor);
+    div.appendChild(btn);
+}
+function selectFornecedor(id) {
+    var select = document.getElementById(id);
+    if (select !== null) {
+        select.remove();
+    }
+    select = document.createElement('select');
+    select.id = id;
+    for (var i in TUDO.fornecedores) {
+        var f = TUDO.fornecedores[i];
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = f.nome;
+        select.appendChild(opt);
+    }
+    return select;
+}
+function addResina(ev) {
+    console.log(ev);
+    console.log(typeof (ev));
+    var field_forn = document.getElementById('resina-fornecedor');
+    if (field_forn === null) return;
+    var field_nome = document.getElementById('resina-nome');
+    if (field_nome === null) return;
+    var field_preco = document.getElementById('resina-preco');
+    if (field_preco === null) return;
+    var field_peso = document.getElementById('resina-peso');
+    if (field_peso === null) return;
+    var forn = field_forn.value;
+    var nome = field_nome.value;
+    var preco = field_preco.value;
+    var peso = field_peso.value;
+
+    if (nome.length <= 3) {
+        alert("Nome de resina muito curto");
+        return;
+    }
+    try{
+        preco = parseFloat(preco);
+    }catch{
+        alert("Preço preenchido incorretamente");
+        return;
+    }
+    try{
+        peso = parseInt(peso);
+    }catch{
+        alert("Peso preenchido incorretamente");
+        return;
+    }    
+    var resina = new Resina(TUDO.fornecedores[parseInt(forn)],nome,preco,peso);
+    TUDO.push_resina(resina);
+    save_tudo(TUDO);
+    updateApp();
+}
+function formResina(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.className = 'form';
+    var forn = selectFornecedor('resina-fornecedor');
+    var nome = document.createElement("input");
+
+    var preco = document.createElement("input");
+    var peso = document.createElement("input");
+    nome.id = 'resina-nome';
+    nome.setAttribute('type', 'text');
+    preco.id = 'resina-preco';
+    preco.setAttribute("type", 'number');
+    peso.id = 'resina-peso';
+    peso.setAttribute("type", 'number');
+
+    div.appendChild(document.createTextNode("Fornecedor:"));
+    div.appendChild(forn);
+    div.appendChild(document.createTextNode("Nome da resina:"));
+    div.appendChild(nome);
+    div.appendChild(document.createTextNode("Preço:"));
+    div.appendChild(preco);
+    div.appendChild(document.createTextNode("Peso em gramas:"));
+    div.appendChild(peso);
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Resina";
+    btn.addEventListener('pointerup', addResina);
+    div.appendChild(btn);
+}
+function loadResinas() {
+    var antigo = document.getElementById('resinas');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "resinas";
+    var heading = document.createElement("h1");
+    heading.innerText='Resinas';
+    div.appendChild(heading);
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var tbody = document.createElement("tbody");
+    for (var f in TUDO.resinas) {
+        var row = document.createElement('tr');
+        var res = TUDO.resinas[f];
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(res.fornecedor.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(res.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(res.preco));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(res.peso));
+        cell = document.createElement('td');
+
+        tbody.appendChild(row);
+    }
+    let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)'];
+    for (var i in headers) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(headers[i]));
+        theadrow.appendChild(th);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    formResina(div);
+    APP.appendChild(div);
+
+}
+function updateApp() {
+    loadFornecedores();
+    loadResinas();
 }
 function loadPage() {
     show("Carregando");
