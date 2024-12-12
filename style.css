@@ -3,6 +3,15 @@ body {
     flex-direction: column;
 }
 
+h1,
+h2 {
+    border: solid black 0.2vmin;
+    border-radius: 2vmin;
+    flex: 1;
+    padding: 0.5vmin;
+    align-items: center;
+}
+
 tr,
 th,
 td {
@@ -12,7 +21,8 @@ td {
     flex: 1;
     padding: 0.3vmin;
 }
-div{
+
+div {
     border: solid black 0.2vmin;
     border-radius: 1vmin;
     display: flex;
@@ -20,8 +30,14 @@ div{
     padding: 0.3vmin;
     flex-direction: column;
 }
-div.form{
+
+div.form {
     flex-direction: row;
+    padding: 1vmin;
+}
+
+div.panel {
+    padding: 5vmin;
 }
 
 table {

@@ -115,6 +115,37 @@ class Tudo {
 
 
 }
+/**
+ * 
+ * @param  num Verifica se é um numero válido
+ * @returns True se válido e False caso contrário
+ */
+function checkNum(num) {
+    try {
+        if (num === undefined || num === null) {
+            return false
+        }
+        if (typeof (num) == typeof("") && num.length < 1) {
+            return false;
+        }
+        var x = parseFloat(num);
+        if (typeof (x) !== typeof (0.5)) {
+            return false;
+        }
+        if (x !== null && x !== NaN) {
+            console.log("Check =>");
+            console.log(num);
+            console.log(x);
+            console.log("len",num.length,x.length);
+            console.log("type",typeof(num),typeof(x));
+            return true;
+        }
+    } catch (e) {
+        show(e);
+    }
+    return false;
+}
+
 function save_tudo(tudo) {
     localStorage.setItem('fulldata', JSON.stringify(tudo));
 }
@@ -178,6 +209,9 @@ function addFornecedor(ev) {
 function formFornecedor(parent) {
     var div = document.createElement("div");
     parent.appendChild(div);
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de Fornecedor";
+    div.appendChild(heading);
     div.appendChild(document.createTextNode("Nome:"));
     var nome = document.createElement("input");
     nome.id = 'fornecedor-nome';
@@ -197,8 +231,9 @@ function loadFornecedores() {
     }
     var div = document.createElement('div');
     div.id = "fornecedores";
+    div.className = "panel";
     var heading = document.createElement("h1");
-    heading.innerText='Fornecedores';
+    heading.innerText = 'Fornecedores';
     div.appendChild(heading);
     var table = document.createElement('table');
     var thead = document.createElement('thead');
@@ -221,21 +256,7 @@ function loadFornecedores() {
     formFornecedor(div);
     APP.appendChild(div);
 }
-function formFornecedor(parent) {
-    var div = document.createElement("div");
-    div.className = 'form';
-    parent.appendChild(div);
-    div.appendChild(document.createTextNode("Nome:"));
-    var nome = document.createElement("input");
-    nome.id = 'fornecedor-nome';
-    nome.setAttribute('type', 'text');
-    nome.ariaLabel = "Nome";
-    div.appendChild(nome);
-    var btn = document.createElement("button");
-    btn.innerText = "Adicionar Fornecedor";
-    btn.addEventListener('pointerup', addFornecedor);
-    div.appendChild(btn);
-}
+
 function selectFornecedor(id) {
     var select = document.getElementById(id);
     if (select !== null) {
@@ -272,19 +293,25 @@ function addResina(ev) {
         alert("Nome de resina muito curto");
         return;
     }
-    try{
+    try {
+        if (!checkNum(preco)) {
+            throw new TypeError("");
+        }
         preco = parseFloat(preco);
-    }catch{
+    } catch (e) {
         alert("Preço preenchido incorretamente");
         return;
     }
-    try{
+    try {
+        if (!checkNum(peso)) {
+            throw new TypeError("");
+        }
         peso = parseInt(peso);
-    }catch{
+    } catch (e) {
         alert("Peso preenchido incorretamente");
         return;
-    }    
-    var resina = new Resina(TUDO.fornecedores[parseInt(forn)],nome,preco,peso);
+    }
+    var resina = new Resina(TUDO.fornecedores[parseInt(forn)], nome, preco, peso);
     TUDO.push_resina(resina);
     save_tudo(TUDO);
     updateApp();
@@ -304,7 +331,9 @@ function formResina(parent) {
     preco.setAttribute("type", 'number');
     peso.id = 'resina-peso';
     peso.setAttribute("type", 'number');
-
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de resina";
+    div.appendChild(heading);
     div.appendChild(document.createTextNode("Fornecedor:"));
     div.appendChild(forn);
     div.appendChild(document.createTextNode("Nome da resina:"));
@@ -324,9 +353,10 @@ function loadResinas() {
         antigo.remove();
     }
     var div = document.createElement('div');
+    div.className = "panel";
     div.id = "resinas";
     var heading = document.createElement("h1");
-    heading.innerText='Resinas';
+    heading.innerText = 'Resinas';
     div.appendChild(heading);
     var table = document.createElement('table');
     var thead = document.createElement('thead');
@@ -366,9 +396,134 @@ function loadResinas() {
     APP.appendChild(div);
 
 }
+function addPigmento(ev) {
+    console.log(ev);
+    console.log(typeof (ev));
+    var field_forn = document.getElementById('pigmento-fornecedor');
+    if (field_forn === null) return;
+    var field_nome = document.getElementById('pigmento-nome');
+    if (field_nome === null) return;
+    var field_preco = document.getElementById('pigmento-preco');
+    if (field_preco === null) return;
+    var field_peso = document.getElementById('pigmento-peso');
+    if (field_peso === null) return;
+    var forn = field_forn.value;
+    var nome = field_nome.value;
+    var preco = field_preco.value;
+    var peso = field_peso.value;
+
+    if (nome.length <= 3) {
+        alert("Nome de pigmento muito curto");
+        return;
+    }
+    try {
+        if (!checkNum(preco)) {
+            throw new TypeError("");
+        }
+        preco = parseFloat(preco);
+    } catch (e) {
+        alert("Preço preenchido incorretamente");
+        return;
+    }
+    try {
+        if (!checkNum(peso)) {
+            throw new TypeError("");
+        }
+        peso = parseInt(peso);
+    } catch (e) {
+        alert("Peso preenchido incorretamente");
+        return;
+    }
+    var pigmento = new Pigmento(TUDO.fornecedores[parseInt(forn)], nome, preco, peso);
+    TUDO.push_pigmento(pigmento);
+    save_tudo(TUDO);
+    updateApp();
+}
+function formPigmento(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.className = 'form';
+    var forn = selectFornecedor('pigmento-fornecedor');
+    var nome = document.createElement("input");
+
+    var preco = document.createElement("input");
+    var peso = document.createElement("input");
+    nome.id = 'pigmento-nome';
+    nome.setAttribute('type', 'text');
+    preco.id = 'pigmento-preco';
+    preco.setAttribute("type", 'number');
+    peso.id = 'pigmento-peso';
+    peso.setAttribute("type", 'number');
+
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de pigmento";
+    div.appendChild(heading);
+    div.appendChild(document.createTextNode("Fornecedor:"));
+    div.appendChild(forn);
+    div.appendChild(document.createTextNode("Nome do Pigmento:"));
+    div.appendChild(nome);
+    div.appendChild(document.createTextNode("Preço:"));
+    div.appendChild(preco);
+    div.appendChild(document.createTextNode("Peso em gramas:"));
+    div.appendChild(peso);
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Pigmento";
+    btn.addEventListener('pointerup', addPigmento);
+    div.appendChild(btn);
+}
+function loadPigmentos() {
+    var antigo = document.getElementById('pigmentos');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "pigmentos";
+    div.className = "panel";
+    var heading = document.createElement("h1");
+    heading.innerText = 'Pigmentos';
+    div.appendChild(heading);
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var tbody = document.createElement("tbody");
+    for (var f in TUDO.pigmentos) {
+        var row = document.createElement('tr');
+        var pig = TUDO.pigmentos[f];
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(pig.fornecedor.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(pig.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(pig.preco));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(pig.peso));
+        cell = document.createElement('td');
+
+        tbody.appendChild(row);
+    }
+    let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)'];
+    for (var i in headers) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(headers[i]));
+        theadrow.appendChild(th);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    formPigmento(div);
+    APP.appendChild(div);
+
+}
 function updateApp() {
     loadFornecedores();
     loadResinas();
+    loadPigmentos();
 }
 function loadPage() {
     show("Carregando");
