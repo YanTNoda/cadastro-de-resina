@@ -165,11 +165,18 @@ function load_tudo() {
     }
     else {
         show("Carregado registro");
-        show(typeof (t)); show(t);
-        t = JSON.parse(t);
-        show(typeof (t)); show(t);
-        t = Object.assign(new Tudo, t);
-        show(typeof (t)); show(t);
+        try{
+
+            show(typeof (t)); show(t);
+            t = JSON.parse(t);
+            show(typeof (t)); show(t);
+            t = Object.assign(new Tudo, t);
+            show(typeof (t)); show(t);
+        }catch(e){
+            show("Erro ao carregar dados antigos,gerando novo");
+            t = new Tudo([], [], [], [], [], [], [], []);
+            save_tudo(t);
+        }
     }
 
     return t;
@@ -228,6 +235,7 @@ function formFornecedor(parent) {
     div.appendChild(nome);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Fornecedor";
+    btn.setAttribute("type",'button');
     addEventListeners(btn, addFornecedor);
     div.appendChild(btn);
 }
@@ -353,6 +361,7 @@ function formResina(parent) {
     div.appendChild(peso);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Resina";
+    btn.setAttribute("type",'button');
     addEventListeners(btn, addResina);
     div.appendChild(btn);
 }
@@ -478,6 +487,7 @@ function formPigmento(parent) {
     div.appendChild(peso);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Pigmento";
+    btn.setAttribute("type",'button');
     addEventListener(btn, addPigmento);
     div.appendChild(btn);
 }
@@ -618,6 +628,7 @@ function formMolde(parent) {
     div.appendChild(usos);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Molde";
+    btn.setAttribute("type",'button');
     addEventListeners(btn, addMolde);
     div.appendChild(btn);
 }
