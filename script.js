@@ -291,6 +291,7 @@ function selectFornecedor(id) {
 }
 function addResina(ev) {
     ev.stopImmediatePropagation();
+    ev.preventDefault();
     console.log(ev);
     console.log(typeof (ev));
     var field_forn = document.getElementById('resina-fornecedor');
@@ -488,7 +489,7 @@ function formPigmento(parent) {
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Pigmento";
     btn.setAttribute("type", 'button');
-    addEventListener(btn, addPigmento);
+    addEventListeners(btn, addPigmento);
     div.appendChild(btn);
 }
 function loadPigmentos() {
@@ -593,6 +594,7 @@ function addMolde(ev) {
     }
     var molde = new Molde(TUDO.fornecedores[parseInt(forn)], nome, preco, cavidades, usos);
     TUDO.push_molde(molde);
+    save_tudo(TUDO);
     updateApp();
 }
 function formMolde(parent) {
@@ -681,7 +683,8 @@ function loadMoldes() {
     formMolde(div);
     APP.appendChild(div);
 
-} function addExtra(ev) {
+}
+function addExtra(ev) {
     ev.stopImmediatePropagation();
     console.log(ev);
     console.log(typeof (ev));
@@ -712,6 +715,7 @@ function loadMoldes() {
 
     var extra = new Extra(TUDO.fornecedores[parseInt(forn)], nome, preco);
     TUDO.push_extra(extra);
+    save_tudo(TUDO);
     updateApp();
 }
 function formExtra(parent) {
@@ -735,7 +739,7 @@ function formExtra(parent) {
     div.appendChild(document.createTextNode("Nome do item:"));
     div.appendChild(nome);
     div.appendChild(document.createTextNode("Preço:"));
-    div.appendChild(preco);    
+    div.appendChild(preco);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Extra";
     btn.setAttribute("type", 'button');
@@ -786,6 +790,103 @@ function loadExtras() {
     APP.appendChild(div);
 
 }
+function addFuncionario(ev) {
+    ev.stopImmediatePropagation();
+    console.log(ev);
+    console.log(typeof (ev));
+    var field_nome = document.getElementById('funcionario-nome');
+    if (field_nome === null) return;
+    var field_preco = document.getElementById('funcionario-preco');
+    if (field_preco === null) return;
+
+    var nome = field_nome.value;
+    var preco = field_preco.value;
+
+    if (nome.length <= 3) {
+        alert("Nome de funcionario muito curto");
+        return;
+    }
+    try {
+        if (!checkNum(preco)) {
+            throw new TypeError("");
+        }
+        preco = parseFloat(preco);
+    } catch (e) {
+        alert("Custo preenchido incorretamente");
+        return;
+    }
+
+    var funcionario = new Funcionario(nome, preco);
+    TUDO.push_funcionario(funcionario);
+    save_tudo(TUDO);
+    updateApp();
+}
+function formFuncionarios(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.className = 'form';
+    var nome = document.createElement("input");
+    var preco = document.createElement("input");
+    nome.id = 'funcionario-nome';
+    nome.setAttribute('type', 'text');
+    preco.id = 'funcionario-preco';
+    preco.setAttribute("type", 'number');
+
+
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de funcionário";
+    div.appendChild(heading);
+    div.appendChild(document.createTextNode("Nome:"));
+    div.appendChild(nome);
+    div.appendChild(document.createTextNode("Custo(R$/hora):"));
+    div.appendChild(preco);
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Funcionário";
+    btn.setAttribute("type", 'button');
+    addEventListeners(btn, addFuncionario);
+    div.appendChild(btn);
+}
+function loadFuncionarios() {
+    var antigo = document.getElementById('funcionarios');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "funcionarios";
+    div.className = "panel";
+    var heading = document.createElement("h1");
+    heading.innerText = 'Funcionários';
+    div.appendChild(heading);
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var tbody = document.createElement("tbody");
+    for (var f in TUDO.funcionarios) {
+        var row = document.createElement('tr');
+        var func = TUDO.funcionarios[f];
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(func.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(func.preco));
+        tbody.appendChild(row);
+    }
+    let headers = ['Nome', 'Preço(R$/hora)'];
+    for (var i in headers) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(headers[i]));
+        theadrow.appendChild(th);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    formFuncionarios(div);
+    APP.appendChild(div);
+
+}
 
 function updateApp() {
     loadFornecedores();
@@ -794,6 +895,7 @@ function updateApp() {
     loadPigmentos();
     loadMoldes();
     loadExtras();
+    loadFuncionarios();
 }
 function loadPage() {
     show("Carregando");
