@@ -30,6 +30,8 @@ div.form {
 
 div.panel {
     padding: 5vmin;
+    margin-top: 1vmin;
+    margin-bottom: 1vmin;
 }
 
 table {
@@ -70,7 +72,7 @@ td {
     border-radius: 1vmin;
     display: flexbox;
     max-width: 200vmin;
-    font-size: 0.5em;
+    font-size: 0.7em;
     padding: auto;
     margin: auto;
 }
