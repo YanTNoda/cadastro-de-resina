@@ -165,14 +165,14 @@ function load_tudo() {
     }
     else {
         show("Carregado registro");
-        try{
+        try {
 
             show(typeof (t)); show(t);
             t = JSON.parse(t);
             show(typeof (t)); show(t);
             t = Object.assign(new Tudo, t);
             show(typeof (t)); show(t);
-        }catch(e){
+        } catch (e) {
             show("Erro ao carregar dados antigos,gerando novo");
             t = new Tudo([], [], [], [], [], [], [], []);
             save_tudo(t);
@@ -235,7 +235,7 @@ function formFornecedor(parent) {
     div.appendChild(nome);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Fornecedor";
-    btn.setAttribute("type",'button');
+    btn.setAttribute("type", 'button');
     addEventListeners(btn, addFornecedor);
     div.appendChild(btn);
 }
@@ -361,7 +361,7 @@ function formResina(parent) {
     div.appendChild(peso);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Resina";
-    btn.setAttribute("type",'button');
+    btn.setAttribute("type", 'button');
     addEventListeners(btn, addResina);
     div.appendChild(btn);
 }
@@ -414,7 +414,7 @@ function loadResinas() {
     APP.appendChild(div);
 
 }
-function addPigmento(ev) {    
+function addPigmento(ev) {
     ev.stopImmediatePropagation();
     console.log(ev);
     console.log(typeof (ev));
@@ -487,7 +487,7 @@ function formPigmento(parent) {
     div.appendChild(peso);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Pigmento";
-    btn.setAttribute("type",'button');
+    btn.setAttribute("type", 'button');
     addEventListener(btn, addPigmento);
     div.appendChild(btn);
 }
@@ -561,7 +561,7 @@ function addMolde(ev) {
     var usos = field_usos.value;
 
     if (nome.length <= 3) {
-        alert("Nome de pigmento muito curto");
+        alert("Nome de molde muito curto");
         return;
     }
     try {
@@ -628,7 +628,7 @@ function formMolde(parent) {
     div.appendChild(usos);
     var btn = document.createElement("button");
     btn.innerText = "Adicionar Molde";
-    btn.setAttribute("type",'button');
+    btn.setAttribute("type", 'button');
     addEventListeners(btn, addMolde);
     div.appendChild(btn);
 }
@@ -681,6 +681,110 @@ function loadMoldes() {
     formMolde(div);
     APP.appendChild(div);
 
+} function addExtra(ev) {
+    ev.stopImmediatePropagation();
+    console.log(ev);
+    console.log(typeof (ev));
+    var field_forn = document.getElementById('extra-fornecedor');
+    if (field_forn === null) return;
+    var field_nome = document.getElementById('extra-nome');
+    if (field_nome === null) return;
+    var field_preco = document.getElementById('extra-preco');
+    if (field_preco === null) return;
+
+    var forn = field_forn.value;
+    var nome = field_nome.value;
+    var preco = field_preco.value;
+
+    if (nome.length <= 3) {
+        alert("Nome de item extra muito curto");
+        return;
+    }
+    try {
+        if (!checkNum(preco)) {
+            throw new TypeError("");
+        }
+        preco = parseFloat(preco);
+    } catch (e) {
+        alert("Preço preenchido incorretamente");
+        return;
+    }
+
+    var extra = new Extra(TUDO.fornecedores[parseInt(forn)], nome, preco);
+    TUDO.push_extra(extra);
+    updateApp();
+}
+function formExtra(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.className = 'form';
+    var forn = selectFornecedor('extra-fornecedor');
+    var nome = document.createElement("input");
+    var preco = document.createElement("input");
+    nome.id = 'extra-nome';
+    nome.setAttribute('type', 'text');
+    preco.id = 'extra-preco';
+    preco.setAttribute("type", 'number');
+
+
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de extra";
+    div.appendChild(heading);
+    div.appendChild(document.createTextNode("Fornecedor:"));
+    div.appendChild(forn);
+    div.appendChild(document.createTextNode("Nome do item:"));
+    div.appendChild(nome);
+    div.appendChild(document.createTextNode("Preço:"));
+    div.appendChild(preco);    
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Extra";
+    btn.setAttribute("type", 'button');
+    addEventListeners(btn, addExtra);
+    div.appendChild(btn);
+}
+function loadExtras() {
+    var antigo = document.getElementById('extras');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "extras";
+    div.className = "panel";
+    var heading = document.createElement("h1");
+    heading.innerText = 'Extras';
+    div.appendChild(heading);
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var tbody = document.createElement("tbody");
+    for (var f in TUDO.extras) {
+        var row = document.createElement('tr');
+        var ex = TUDO.extras[f];
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(ex.fornecedor.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(ex.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(ex.preco));
+        tbody.appendChild(row);
+    }
+    let headers = ['Fornecedor', 'Nome', 'Preço(R$)'];
+    for (var i in headers) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(headers[i]));
+        theadrow.appendChild(th);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    formExtra(div);
+    APP.appendChild(div);
+
 }
 
 function updateApp() {
@@ -689,6 +793,7 @@ function updateApp() {
     loadResinas();
     loadPigmentos();
     loadMoldes();
+    loadExtras();
 }
 function loadPage() {
     show("Carregando");
