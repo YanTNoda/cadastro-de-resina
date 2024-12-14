@@ -49,7 +49,8 @@ class Funcionario {
     }
 }
 class Peca {
-    constructor(resina, pigmento, molde, extras, funcionario, peso, tempo, paralelo) {
+    constructor(nome, resina, pigmento, molde, extras, funcionario, peso, tempo, paralelo) {
+        this.nome = nome
         this.resina = resina;
         this.pigmento = pigmento;
         this.molde = molde;
@@ -200,7 +201,7 @@ function push_default_vals(t) {
     t.push_extra(ex2);
     var funcionario = new Funcionario('Estagio', 6.5);
     t.push_funcionario(funcionario);
-    var peca = new Peca(res, pig, mol, [[ex1, 2], [ex2, 1]], funcionario, 100, 2, 4);
+    var peca = new Peca("PecaX", res, pig, mol, [[ex1, 2], [ex2, 1]], funcionario, 100, 2, 4);
     t.push_peca(peca);
     var venda = new Venda(peca, 90);
     t.push_venda(venda);
@@ -280,6 +281,10 @@ function selectFornecedor(id) {
     }
     select = document.createElement('select');
     select.id = id;
+    var todos = document.createElement("option");
+    todos.value = '*';
+    todos.text = "Todos";
+    select.appendChild(todos);
     for (var i in TUDO.fornecedores) {
         var f = TUDO.fornecedores[i];
         var opt = document.createElement('option');
@@ -288,6 +293,75 @@ function selectFornecedor(id) {
         select.appendChild(opt);
     }
     return select;
+}
+function selectResina(id, fornecedor_nome) {
+    var select = document.getElementById(id);
+    if (select === null || select === undefined) return;
+    select.childNodes.forEach(child => select.removeChild(child));
+    show(fornecedor_nome);
+    for (var i in TUDO.resinas) {
+        var r = TUDO.resinas[i];
+        show(r.fornecedor.nome);
+        if (fornecedor_nome !== null //
+            && r.fornecedor.nome != fornecedor_nome) {
+            continue;
+        }
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = r.nome;
+        select.appendChild(opt);
+    }
+    if (select.childNodes.length == 0) {
+        select.setAttribute('disabled', 'false');
+    } else {
+        select.removeAttribute('disabled');
+    }
+}
+function selectPigmento(id, fornecedor_nome) {
+    var select = document.getElementById(id);
+    if (select === null || select === undefined) return;
+    select.childNodes.forEach(child => select.removeChild(child));
+    show(fornecedor_nome);
+    for (var i in TUDO.pigmentos) {
+        var p = TUDO.pigmentos[i];
+        show(p.fornecedor.nome);
+        if (fornecedor_nome !== null //
+            && p.fornecedor.nome != fornecedor_nome) {
+            continue;
+        }
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = p.nome;
+        select.appendChild(opt);
+    }
+    if (select.childNodes.length == 0) {
+        select.setAttribute('disabled', 'false');
+    } else {
+        select.removeAttribute('disabled');
+    }
+}
+function selectMolde(id, fornecedor_nome) {
+    var select = document.getElementById(id);
+    if (select === null || select === undefined) return;
+    select.childNodes.forEach(child => select.removeChild(child));
+    show(fornecedor_nome);
+    for (var i in TUDO.moldes) {
+        var m = TUDO.moldes[i];
+        show(m.fornecedor.nome);
+        if (fornecedor_nome !== null //
+            && m.fornecedor.nome != fornecedor_nome) {
+            continue;
+        }
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = m.nome;
+        select.appendChild(opt);
+    }
+    if (select.childNodes.length == 0) {
+        select.setAttribute('disabled', 'false');
+    } else {
+        select.removeAttribute('disabled');
+    }
 }
 function addResina(ev) {
     ev.stopImmediatePropagation();
@@ -887,6 +961,153 @@ function loadFuncionarios() {
     APP.appendChild(div);
 
 }
+function addPeca(ev) {
+    ev.stopImmediatePropagation();
+    console.log(ev);
+    console.log(typeof (ev));
+    var field_nome = document.getElementById('peca-nome');
+    if (field_nome === null) return;
+    var field_preco = document.getElementById('peca-peso');
+    if (field_preco === null) return;
+
+    var nome = field_nome.value;
+    var peso = field_peso.value;
+
+    if (nome.length <= 3) {
+        alert("Nome de funcionario muito curto");
+        return;
+    }
+    try {
+        if (!checkNum(peso)) {
+            throw new TypeError("");
+        }
+        peso = parseFloat(peso);
+    } catch (e) {
+        alert("Custo preenchido incorretamente");
+        return;
+    }
+
+}
+function updateFornecedoresResina(ev) {
+    ev.preventDefault();
+    var fornecedor = document.getElementById('peca-fornecedor-resina');
+    var nome = null;
+    if (fornecedor.value != "*") nome = TUDO.fornecedores[parseInt(fornecedor.value)].nome
+    selectResina('peca-resina', nome);
+}
+function updateFornecedoresPigmento(ev) {
+    ev.preventDefault();
+    var fornecedor = document.getElementById('peca-fornecedor-pigmento');
+
+    var nome = null;
+    if (fornecedor.value != "*") nome = TUDO.fornecedores[parseInt(fornecedor.value)].nome
+    selectPigmento('peca-pigmento', nome);
+}
+function updateFornecedoresMolde(ev) {
+    ev.preventDefault();
+    var fornecedor = document.getElementById('peca-fornecedor-molde');
+    var nome = null;
+    if (fornecedor.value != "*") nome = TUDO.fornecedores[parseInt(fornecedor.value)].nome
+    selectMolde('peca-molde', nome);
+}
+function formPecas(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.className = 'form';
+
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de peça";
+    div.appendChild(heading);
+    div.appendChild(document.createTextNode("Nome:"));
+    var nome = document.createElement("input");
+    nome.id = 'peca-nome';
+    nome.setAttribute('type', 'text');
+    div.appendChild(nome);
+
+    //RESINA
+    div.appendChild(document.createTextNode("Fornecedor da Resina:"));
+    var f_resina = selectFornecedor('peca-fornecedor-resina');
+    var resina = document.createElement('select');
+    resina.id = 'peca-resina';
+    selectResina('peca-resina', null);
+    f_resina.addEventListener('change', updateFornecedoresResina);
+    div.appendChild(f_resina);
+    div.appendChild(document.createTextNode("Resina:"));
+    div.appendChild(resina);
+
+    //PIGMENTO
+    div.appendChild(document.createTextNode("Fornecedor do Pigmento:"));
+    var f_pigmento = selectFornecedor('peca-fornecedor-pigmento');
+    var pigmento = document.createElement('select');
+    pigmento.id = 'peca-pigmento';
+    selectPigmento('peca-pigmento', null);
+    f_pigmento.addEventListener('change', updateFornecedoresPigmento);
+    div.appendChild(f_pigmento);
+    div.appendChild(document.createTextNode("Pigmento:"));
+    div.appendChild(pigmento);
+
+    //MOLDE
+    div.appendChild(document.createTextNode("Fornecedor do Molde:"));
+    var f_molde = selectFornecedor('peca-fornecedor-molde');
+    var molde = document.createElement('select');
+    molde.id = 'peca-molde';
+    selectMolde('peca-molde', null);
+    f_molde.addEventListener('change', updateFornecedoresMolde);
+    div.appendChild(f_molde);
+    div.appendChild(document.createTextNode("Molde:"));
+    div.appendChild(molde);
+
+
+
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Peca";
+    btn.setAttribute("type", 'button');
+    addEventListeners(btn, addPeca);
+    div.appendChild(btn);
+}
+function loadPecas() {
+    var antigo = document.getElementById('pecas');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "pecas";
+    div.className = "panel";
+    var heading = document.createElement("h1");
+    heading.innerText = 'Peças';
+    div.appendChild(heading);
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var tbody = document.createElement("tbody");
+    for (var f in TUDO.pecas) {
+        var row = document.createElement('tr');
+        var peca = Object.assign(new Peca, TUDO.pecas[f]);
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(peca.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(peca.molde.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(peca.custo_total()));
+    }
+    let headers = ['Nome', "Molde", 'Custo Bruto(R$)'];
+    for (var i in headers) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(headers[i]));
+        theadrow.appendChild(th);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    formPecas(div);
+    APP.appendChild(div);
+
+}
 
 function updateApp() {
     loadFornecedores();
@@ -896,6 +1117,7 @@ function updateApp() {
     loadMoldes();
     loadExtras();
     loadFuncionarios();
+    loadPecas();
 }
 function loadPage() {
     show("Carregando");
