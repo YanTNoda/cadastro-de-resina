@@ -83,13 +83,20 @@ class Peca {
         return this.tempo * this.funcionario.preco / this.paralelo;
     }
     custo_material() {
-        var r = this.resina.preco_por_grama() * 0.97 * this.peso;
-        var p = this.pigmento.preco_por_grama() * 0.03 * this.peso;
+        var r = this.resina;
+        r = Object.assign(new Resina, r);
+        r = r.preco_por_grama() * 0.97 * this.peso;
+        var p = this.pigmento;
+        p = Object.assign(new Pigmento, p);
+        p = p.preco_por_grama() * 0.03 * this.peso;
         var e = 0;
         for (var i in this.extras) {
             e += this.extras[i][0].preco * this.extras[i][1];
         }
-        return r + p + e + this.molde.custo_por_peca();
+        var m = this.molde;
+        m = Object.assign(new Molde, m);
+        m = m.custo_por_peca();
+        return r + p + e + m;
     }
     custo_total() {
         return this.mao_de_obra() + this.custo_material();
@@ -293,17 +300,19 @@ function loadFornecedores() {
     APP.appendChild(div);
 }
 
-function selectFornecedor(id) {
+function selectFornecedor(id, com_todos) {
     var select = document.getElementById(id);
     if (select !== null) {
         select.remove();
     }
     select = document.createElement('select');
     select.id = id;
-    var todos = document.createElement("option");
-    todos.value = '*';
-    todos.text = "Todos";
-    select.appendChild(todos);
+    if (com_todos) {
+        var todos = document.createElement("option");
+        todos.value = '*';
+        todos.text = "Todos";
+        select.appendChild(todos);
+    }
     for (var i in TUDO.fornecedores) {
         var f = TUDO.fornecedores[i];
         var opt = document.createElement('option');
@@ -474,7 +483,7 @@ function formResina(parent) {
     var div = document.createElement("div");
     parent.appendChild(div);
     div.className = 'form';
-    var forn = selectFornecedor('resina-fornecedor');
+    var forn = selectFornecedor('resina-fornecedor', false);
     var nome = document.createElement("input");
 
     var preco = document.createElement("input");
@@ -528,10 +537,10 @@ function loadResinas() {
         cell.appendChild(document.createTextNode(res.nome));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(res.preco));
+        cell.appendChild(document.createTextNode(res.preco.toFixed(2)));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(res.peso));
+        cell.appendChild(document.createTextNode(res.peso.toFixed(2)));
         cell = document.createElement('td');
 
         tbody.appendChild(row);
@@ -599,7 +608,7 @@ function formPigmento(parent) {
     var div = document.createElement("div");
     parent.appendChild(div);
     div.className = 'form';
-    var forn = selectFornecedor('pigmento-fornecedor');
+    var forn = selectFornecedor('pigmento-fornecedor', false);
     var nome = document.createElement("input");
 
     var preco = document.createElement("input");
@@ -654,10 +663,10 @@ function loadPigmentos() {
         cell.appendChild(document.createTextNode(pig.nome));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(pig.preco));
+        cell.appendChild(document.createTextNode(pig.preco.toFixed(2)));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(pig.peso));
+        cell.appendChild(document.createTextNode(pig.peso.toFixed(2)));
         cell = document.createElement('td');
 
         tbody.appendChild(row);
@@ -737,7 +746,7 @@ function formMolde(parent) {
     var div = document.createElement("div");
     parent.appendChild(div);
     div.className = 'form';
-    var forn = selectFornecedor('molde-fornecedor');
+    var forn = selectFornecedor('molde-fornecedor', false);
     var nome = document.createElement("input");
     var preco = document.createElement("input");
     var cavidades = document.createElement("input");
@@ -796,7 +805,7 @@ function loadMoldes() {
         cell.appendChild(document.createTextNode(mol.nome));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(mol.preco));
+        cell.appendChild(document.createTextNode(mol.preco.toFixed(2)));
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(mol.cavidades));
@@ -858,7 +867,7 @@ function formExtra(parent) {
     var div = document.createElement("div");
     parent.appendChild(div);
     div.className = 'form';
-    var forn = selectFornecedor('extra-fornecedor');
+    var forn = selectFornecedor('extra-fornecedor', false);
     var nome = document.createElement("input");
     var preco = document.createElement("input");
     nome.id = 'extra-nome';
@@ -908,7 +917,7 @@ function loadExtras() {
         cell.appendChild(document.createTextNode(ex.nome));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(ex.preco));
+        cell.appendChild(document.createTextNode(ex.preco.toFixed(2)));
         tbody.appendChild(row);
     }
     let headers = ['Fornecedor', 'Nome', 'Preço(R$)'];
@@ -1005,7 +1014,7 @@ function loadFuncionarios() {
         cell.appendChild(document.createTextNode(func.nome));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(func.preco));
+        cell.appendChild(document.createTextNode(func.preco.toFixed(2)));
         tbody.appendChild(row);
     }
     let headers = ['Nome', 'Preço(R$/hora)'];
@@ -1169,7 +1178,7 @@ function loadTmpExtras(id) {
         td.appendChild(document.createTextNode(par[0].nome));
         tbodytr.appendChild(td);
         td = document.createElement('td');
-        td.appendChild(document.createTextNode(par[0].preco));
+        td.appendChild(document.createTextNode(par[0].preco.toFixed(2)));
         tbodytr.appendChild(td);
         td = document.createElement('td');
         td.appendChild(document.createTextNode(par[1]));
@@ -1224,7 +1233,7 @@ function formPecas(parent) {
     var r_div = document.createElement('div');
 
     r_div.appendChild(document.createTextNode("Fornecedor da Resina:"));
-    var f_resina = selectFornecedor('peca-fornecedor-resina');
+    var f_resina = selectFornecedor('peca-fornecedor-resina', true);
     var resina = document.createElement('select');
     resina.id = 'peca-resina';
 
@@ -1238,7 +1247,7 @@ function formPecas(parent) {
     var p_div = document.createElement('div');
 
     p_div.appendChild(document.createTextNode("Fornecedor do Pigmento:"));
-    var f_pigmento = selectFornecedor('peca-fornecedor-pigmento');
+    var f_pigmento = selectFornecedor('peca-fornecedor-pigmento', true);
     var pigmento = document.createElement('select');
     pigmento.id = 'peca-pigmento';
     f_pigmento.addEventListener('change', updateFornecedoresPigmento);
@@ -1252,7 +1261,7 @@ function formPecas(parent) {
     var m_div = document.createElement('div');
 
     m_div.appendChild(document.createTextNode("Fornecedor do Molde:"));
-    var f_molde = selectFornecedor('peca-fornecedor-molde');
+    var f_molde = selectFornecedor('peca-fornecedor-molde', true);
     var molde = document.createElement('select');
     molde.id = 'peca-molde';
     f_molde.addEventListener('change', updateFornecedoresMolde);
@@ -1263,7 +1272,7 @@ function formPecas(parent) {
 
     //Extras
     var e_div = document.createElement('div');
-    var f_extra = selectFornecedor('peca-fornecedor-extra');
+    var f_extra = selectFornecedor('peca-fornecedor-extra', true);
     var extra = document.createElement('select');
     var extras = document.createElement('table');
     var btn_extras = document.createElement('button');
@@ -1334,7 +1343,8 @@ function loadPecas() {
         cell.appendChild(document.createTextNode(peca.molde.nome));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(peca.custo_total()));
+        cell.appendChild(document.createTextNode(peca.custo_total().toFixed(2)));
+        tbody.appendChild(row);
     }
     let headers = ['Nome', "Molde", 'Custo Bruto(R$)'];
     for (var i in headers) {
