@@ -20,6 +20,7 @@ div {
     flex: 1;
     padding: 0.3vmin;
     flex-direction: column;
+    margin:0.4vmin;
 }
 
 div.form {
