@@ -2,6 +2,7 @@ let APP;
 let TUDO;
 let EVENTS = ['touchend'];
 let EXTRAS_LIST = [];
+let VALOR_VENDA = -1;
 
 function addEventListeners(element, f) {
     for (var i in EVENTS) {
@@ -109,7 +110,9 @@ class Venda {
         this.valor_venda = valor_venda;
     }
     lucro() {
-        return this.valor_venda - this.peca.custo_total();
+        var peca = this.peca;
+        peca = Object.assign(new Peca, peca);
+        return this.valor_venda - peca.custo_total();
     }
     margem_de_lucro() {
         return this.lucro() / this.valor_venda;
@@ -205,7 +208,7 @@ function load_tudo() {
             save_tudo(t);
         }
     }
-
+    show("Carregou Tudo:" + JSON.stringify(t));
     return t;
 }
 
@@ -436,9 +439,13 @@ function selectFuncionarios(id) {
 }
 function selectPecas(id) {
     var select = document.getElementById(id);
-    if (select === null || select === undefined) return;
+    if (select === null || select === undefined) {
+        console.log("Não encontrou [" + id + "]");
+        return 0;
+    }
     select.childNodes.forEach(child => select.removeChild(child));
     show("Pecas :" + TUDO.pecas);
+    var out = 0;
     for (var i in TUDO.pecas) {
         var p = TUDO.pecas[i];
         show(p.nome);
@@ -446,12 +453,14 @@ function selectPecas(id) {
         opt.value = i;
         opt.text = p.nome;
         select.appendChild(opt);
+        out++;
     }
     if (select.childNodes.length == 0) {
         select.setAttribute('disabled', 'false');
     } else {
         select.removeAttribute('disabled');
     }
+    return out;
 }
 function addResina(ev) {
     ev.stopImmediatePropagation();
@@ -1363,18 +1372,18 @@ function loadPecas() {
 
         cell = document.createElement('td');
         row.appendChild(cell);
-      cell.appendChild(document.createTextNode(peca.custo_material().toFixed(2)));
-        
+        cell.appendChild(document.createTextNode(peca.custo_material().toFixed(2)));
+
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(peca.mao_de_obra().toFixed(2)));  
-        
+        cell.appendChild(document.createTextNode(peca.mao_de_obra().toFixed(2)));
+
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(peca.custo_total().toFixed(2)));
         tbody.appendChild(row);
     }
-    let headers = ['Nome', "Molde", "Custo Material","Mão de obra",'Custo Bruto(R$)'];
+    let headers = ['Nome', "Molde", "Custo Material", "Mão de obra", 'Custo Bruto(R$)'];
     for (var i in headers) {
         var th = document.createElement('th');
         th.appendChild(document.createTextNode(headers[i]));
@@ -1393,62 +1402,92 @@ function addVenda(ev) {
     ev.stopImmediatePropagation();
     console.log(ev);
     console.log(typeof (ev));
-    var field_nome = document.getElementById('venda-nome');
-    if (field_nome === null) return;
-    var field_preco = document.getElementById('funcionario-preco');
-    if (field_preco === null) return;
+    var field_peca = document.getElementById('venda-peca');
+    if (field_peca === null) return;
+    if (field_peca.value === null || field_peca.value === "") return;
 
-    var nome = field_nome.value;
-    var preco = field_preco.value;
 
-    if (nome.length <= 3) {
-        alert("Nome de funcionario muito curto");
-        return;
-    }
+    var peca = TUDO.pecas[parseInt(field_peca.value)];
+    peca = Object.assign(new Peca, peca);
+
     try {
-        if (!checkNum(preco)) {
+        if (!checkNum(VALOR_VENDA)) {
             throw new TypeError("");
         }
-        preco = parseFloat(preco);
+        VALOR_VENDA = parseFloat(VALOR_VENDA);
     } catch (e) {
         alert("Custo preenchido incorretamente");
         return;
     }
-
-  //  var funcionario = new Funcionario(nome, preco);
-   // TUDO.pus(funcionario);
-   // save_tudo(TUDO);
+    if (VALOR_VENDA < 0) return;
+    var venda = new Venda(peca, VALOR_VENDA);
+    VALOR_VENDA = -1;
+    TUDO.push_venda(venda);
+    save_tudo(TUDO);
     updateApp();
+}
+function atualizarPrecoVenda(ev) {
+    ev.stopImmediatePropagation();
+    var field = document.getElementById('venda-slider');
+    if (field === null) return;
+    if (!checkNum(field.value)) return;
+    var lucro = document.getElementById('venda-lucro');
+    if (lucro === null) return;
+    var peca = document.getElementById('venda-peca');
+    if (peca === null) return;
+    var selecionada = peca.value;
+    if (selecionada === null || selecionada === "") {
+        updateFormVendas();
+        //selectPecas('venda-peca');
+        return;
+    }
+    console.log(ev, selecionada, field.value);
+    peca = TUDO.pecas[parseInt(selecionada)];
+    peca = Object.assign(new Peca, peca);
+    var valor = peca.custo_total() * parseFloat(field.value);
+    lucro.innerText = "R$" + valor.toFixed(2);
+    VALOR_VENDA = valor;
 }
 function formVendas(parent) {
     var div = document.createElement("div");
     parent.appendChild(div);
     div.className = 'form';
     var peca = document.createElement('select');
-    peca.id="venda-peca";
-        
-    
+    peca.id = "venda-peca";
+
+
     var preco = document.createElement("input");
-    preco.id = 'funcionario-preco';
+    preco.id = 'venda-slider';
     preco.setAttribute("type", 'range');
     preco.setAttribute("min", '1');
-    preco.setAttriute("max", '5');
-    preco.setAttriute("step", '0.005');
+    preco.setAttribute("max", '5');
+    preco.setAttribute("step", '0.005');
 
     var heading = document.createElement("h2");
     heading.innerText = "Cadastro de Venda";
     div.appendChild(heading);
     div.appendChild(document.createTextNode("Peça:"));
     div.appendChild(peca);
-    div.appendChild(document.createTextNode("Custo(R$/hora):"));
+    div.appendChild(document.createTextNode("Lucro planejado:"));
     div.appendChild(preco);
+    var valor_de_venda = document.createElement('p');
+    valor_de_venda.innerText = "R$?";
+    valor_de_venda.id = 'venda-lucro';
+    div.appendChild(document.createTextNode("Preço final:"));
+    div.appendChild(valor_de_venda)
     var btn = document.createElement("button");
-    btn.innerText = "Adicionar Funcionário";
+    btn.innerText = "Adicionar Venda";
     btn.setAttribute("type", 'button');
-    addEventListeners(btn, addFuncionario);
+    addEventListeners(btn, addVenda);
+    preco.addEventListener('change', atualizarPrecoVenda);
     div.appendChild(btn);
-    selectPecas('venda-peca');
 }
+function updateFormVendas() {    
+    var pecas = selectPecas("venda-peca");
+    console.log("Peças : " + pecas);
+    console.log(ev, x);
+}
+
 function loadVendas() {
     var antigo = document.getElementById('vendas');
     if (antigo !== null) {
@@ -1467,7 +1506,7 @@ function loadVendas() {
     for (var v in TUDO.vendas) {
         var row = document.createElement('tr');
         var venda = TUDO.vendas[v];
-        venda =Object.assign(new Venda, venda);
+        venda = Object.assign(new Venda, venda);
         var cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(venda.peca.nome));
@@ -1476,11 +1515,11 @@ function loadVendas() {
         cell.appendChild(document.createTextNode(venda.valor_venda.toFixed(2)));
         cell = document.createElement('td');
         row.appendChild(cell);
-        cell.appendChild(document.createTextNode(venda.margem_de_lucro().toFixed(2)));
+        cell.appendChild(document.createTextNode((100 * venda.margem_de_lucro()).toFixed(2)));
         tbody.appendChild(row);
-        
+
     }
-    let headers = ['Nome', 'Preço Venda','Margem de Lucro(%)'];
+    let headers = ['Nome', 'Preço Venda', 'Margem de Lucro(%)'];
     for (var i in headers) {
         var th = document.createElement('th');
         th.appendChild(document.createTextNode(headers[i]));
