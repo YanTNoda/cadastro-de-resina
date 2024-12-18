@@ -434,6 +434,25 @@ function selectFuncionarios(id) {
         select.removeAttribute('disabled');
     }
 }
+function selectPecas(id) {
+    var select = document.getElementById(id);
+    if (select === null || select === undefined) return;
+    select.childNodes.forEach(child => select.removeChild(child));
+    show("Pecas :" + TUDO.pecas);
+    for (var i in TUDO.pecas) {
+        var p = TUDO.pecas[i];
+        show(p.nome);
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.text = p.nome;
+        select.appendChild(opt);
+    }
+    if (select.childNodes.length == 0) {
+        select.setAttribute('disabled', 'false');
+    } else {
+        select.removeAttribute('disabled');
+    }
+}
 function addResina(ev) {
     ev.stopImmediatePropagation();
     ev.preventDefault();
@@ -1341,12 +1360,21 @@ function loadPecas() {
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(peca.molde.nome));
+
+        cell = document.createElement('td');
+        row.appendChild(cell);
+      cell.appendChild(document.createTextNode(peca.custo_material().toFixed(2)));
+        
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(peca.mao_de_obra().toFixed(2)));  
+        
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(peca.custo_total().toFixed(2)));
         tbody.appendChild(row);
     }
-    let headers = ['Nome', "Molde", 'Custo Bruto(R$)'];
+    let headers = ['Nome', "Molde", "Custo Material","Mão de obra",'Custo Bruto(R$)'];
     for (var i in headers) {
         var th = document.createElement('th');
         th.appendChild(document.createTextNode(headers[i]));
@@ -1361,7 +1389,112 @@ function loadPecas() {
     APP.appendChild(div);
 
 }
+function addVenda(ev) {
+    ev.stopImmediatePropagation();
+    console.log(ev);
+    console.log(typeof (ev));
+    var field_nome = document.getElementById('venda-nome');
+    if (field_nome === null) return;
+    var field_preco = document.getElementById('funcionario-preco');
+    if (field_preco === null) return;
 
+    var nome = field_nome.value;
+    var preco = field_preco.value;
+
+    if (nome.length <= 3) {
+        alert("Nome de funcionario muito curto");
+        return;
+    }
+    try {
+        if (!checkNum(preco)) {
+            throw new TypeError("");
+        }
+        preco = parseFloat(preco);
+    } catch (e) {
+        alert("Custo preenchido incorretamente");
+        return;
+    }
+
+  //  var funcionario = new Funcionario(nome, preco);
+   // TUDO.pus(funcionario);
+   // save_tudo(TUDO);
+    updateApp();
+}
+function formVendas(parent) {
+    var div = document.createElement("div");
+    parent.appendChild(div);
+    div.className = 'form';
+    var peca = document.createElement('select');
+    peca.id="venda-peca";
+        
+    
+    var preco = document.createElement("input");
+    preco.id = 'funcionario-preco';
+    preco.setAttribute("type", 'range');
+    preco.setAttribute("min", '1');
+    preco.setAttriute("max", '5');
+    preco.setAttriute("step", '0.005');
+
+    var heading = document.createElement("h2");
+    heading.innerText = "Cadastro de Venda";
+    div.appendChild(heading);
+    div.appendChild(document.createTextNode("Peça:"));
+    div.appendChild(peca);
+    div.appendChild(document.createTextNode("Custo(R$/hora):"));
+    div.appendChild(preco);
+    var btn = document.createElement("button");
+    btn.innerText = "Adicionar Funcionário";
+    btn.setAttribute("type", 'button');
+    addEventListeners(btn, addFuncionario);
+    div.appendChild(btn);
+    selectPecas('venda-peca');
+}
+function loadVendas() {
+    var antigo = document.getElementById('vendas');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "vendas";
+    div.className = "panel";
+    var heading = document.createElement("h1");
+    heading.innerText = 'Vendas';
+    div.appendChild(heading);
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var theadrow = document.createElement('tr');
+    var tbody = document.createElement("tbody");
+    for (var v in TUDO.vendas) {
+        var row = document.createElement('tr');
+        var venda = TUDO.vendas[v];
+        venda =Object.assign(new Venda, venda);
+        var cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(venda.peca.nome));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(venda.valor_venda.toFixed(2)));
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        cell.appendChild(document.createTextNode(venda.margem_de_lucro().toFixed(2)));
+        tbody.appendChild(row);
+        
+    }
+    let headers = ['Nome', 'Preço Venda','Margem de Lucro(%)'];
+    for (var i in headers) {
+        var th = document.createElement('th');
+        th.appendChild(document.createTextNode(headers[i]));
+        theadrow.appendChild(th);
+    }
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    thead.appendChild(theadrow);
+    theadrow.appendChild(th);
+    formVendas(div);
+    APP.appendChild(div);
+
+}
 function updateApp() {
     loadFornecedores();
     if (TUDO.fornecedores.length == 0) return;
@@ -1375,6 +1508,8 @@ function updateApp() {
         TUDO.moldes.length == 0 ||//
         TUDO.funcionarios.length == 0) return;
     loadPecas();
+    if (TUDO.pecas.length == 0) return;
+    loadVendas();
 }
 function loadPage() {
     show("Carregando");
