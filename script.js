@@ -459,6 +459,7 @@ function selectPecas(id) {
         select.setAttribute('disabled', 'false');
     } else {
         select.removeAttribute('disabled');
+        select.value = 0;
     }
     return out;
 }
@@ -1400,7 +1401,9 @@ function loadPecas() {
 }
 function addVenda(ev) {
     ev.stopImmediatePropagation();
+    ev.preventDefault();
     console.log(ev);
+    console.log("addVenda");
     console.log(typeof (ev));
     var field_peca = document.getElementById('venda-peca');
     if (field_peca === null) return;
@@ -1416,11 +1419,12 @@ function addVenda(ev) {
         }
         VALOR_VENDA = parseFloat(VALOR_VENDA);
     } catch (e) {
-        alert("Custo preenchido incorretamente");
+        alert("Valor de venda preenchido incorretamente");
         return;
     }
     if (VALOR_VENDA < 0) return;
     var venda = new Venda(peca, VALOR_VENDA);
+    console.log("Nova Venda : "+venda);
     VALOR_VENDA = -1;
     TUDO.push_venda(venda);
     save_tudo(TUDO);
@@ -1447,6 +1451,7 @@ function atualizarPrecoVenda(ev) {
     var valor = peca.custo_total() * parseFloat(field.value);
     lucro.innerText = "R$" + valor.toFixed(2);
     VALOR_VENDA = valor;
+    console.log("VALOR_VENDA:"+VALOR_VENDA);
 }
 function formVendas(parent) {
     var div = document.createElement("div");
@@ -1485,7 +1490,7 @@ function formVendas(parent) {
 function updateFormVendas() {    
     var pecas = selectPecas("venda-peca");
     console.log("Peças : " + pecas);
-    console.log(ev, x);
+    
 }
 
 function loadVendas() {
