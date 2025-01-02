@@ -236,6 +236,76 @@ function push_default_vals(t) {
     t.push_venda(venda);
 
 }
+
+let rgxPattern = /(.+)(\d+)/g;
+function delete_item(ev) {
+    ev.stopImmediatePropagation();
+    console.log(ev, ev.target);
+    var value = ev.target.value;
+    if (value === null) return;
+    console.log(value);
+    var groups = rgxPattern.exec(value);
+    if (groups === null) return;
+    console.log(groups);
+    if (groups.length !== 3) return;
+    for (var g in groups) {
+        console.log(g, groups[g]);
+    }
+    var index = parseInt(groups[2]);
+    switch (groups[1]) {
+        case 'fornecedor':
+            if (confirm("Apagar o fornecedor " + TUDO.fornecedores[index].nome + "?")) {
+                TUDO.remove_fornecedor(index);
+            }
+            break;
+        case 'resina':
+            if (confirm("Apagar a resina " + TUDO.resinas[index].nome + "?")) {
+                TUDO.remove_resina(index);
+            }
+            break;
+        case 'pigmento':
+            if (confirm("Apagar o pigmento " + TUDO.pigmentos[index].nome + "?")) {
+                TUDO.remove_pigmento(index);
+            }
+            break;
+        case 'molde':
+            if (confirm("Apagar o molde " + TUDO.moldes[index].nome + "?")) {
+                TUDO.remove_molde(index);
+            }
+            break;
+        case 'extra':
+            if (confirm("Apagar o item extra " + TUDO.extras[index].nome + "?")) {
+                TUDO.remove_extra(index);
+            }
+            break;
+        case 'funcionario':
+            if (confirm("Apagar o funcionario " + TUDO.funcionarios[index].nome + "?")) {
+                TUDO.remove_funcionario(index);
+            }
+            break;
+        case 'peca':
+            if (confirm("Apagar a peca " + TUDO.pecas[index].nome + "?")) {
+                TUDO.remove_peca(index);
+            }
+            break;
+        case 'venda':
+            var venda = TUDO.vendas[index];
+            venda = Object.assign(new Venda, venda);
+            if (confirm("Apagar a venda " + venda.peca.nome + "(R$" + venda.valor_venda.toFixed(2) + ") ?")) {
+                TUDO.remove_venda(index);
+            }
+            break;
+        default:
+            alert("Desconhecido:" + groups[1]);
+            break;
+    }
+    save_tudo(TUDO);
+    updateApp();
+}
+
+
+
+
 function addFornecedor(ev) {
     ev.stopImmediatePropagation();
     console.log(ev);
@@ -291,6 +361,14 @@ function loadFornecedores() {
         var cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(TUDO.fornecedores[f].nome));
+
+        cell = document.createElement('td');
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "fornecedor" + f;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
         tbody.appendChild(row);
     }
     div.appendChild(table);
@@ -572,6 +650,12 @@ function loadResinas() {
         cell.appendChild(document.createTextNode(res.peso.toFixed(2)));
         cell = document.createElement('td');
 
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "resina" + f;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
         tbody.appendChild(row);
     }
     let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)'];
@@ -698,6 +782,12 @@ function loadPigmentos() {
         cell.appendChild(document.createTextNode(pig.peso.toFixed(2)));
         cell = document.createElement('td');
 
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "pigmento" + f;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
         tbody.appendChild(row);
     }
     let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)'];
@@ -841,6 +931,17 @@ function loadMoldes() {
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(mol.usos));
+        cell = document.createElement('td');
+
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "molde" + f;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
+
+
+
         tbody.appendChild(row);
     }
     let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Cavidades', 'Usos'];
@@ -947,6 +1048,15 @@ function loadExtras() {
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(ex.preco.toFixed(2)));
+        cell = document.createElement('td');
+
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "extra" + f;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
+
         tbody.appendChild(row);
     }
     let headers = ['Fornecedor', 'Nome', 'Preço(R$)'];
@@ -1044,6 +1154,15 @@ function loadFuncionarios() {
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(func.preco.toFixed(2)));
+        cell = document.createElement('td');
+
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "funcionario" + f;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
+
         tbody.appendChild(row);
     }
     let headers = ['Nome', 'Preço(R$/hora)'];
@@ -1382,6 +1501,17 @@ function loadPecas() {
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode(peca.custo_total().toFixed(2)));
+        cell = document.createElement('td');
+
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "peca" + f;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
+
+
+
         tbody.appendChild(row);
     }
     let headers = ['Nome', "Molde", "Custo Material", "Mão de obra", 'Custo Bruto(R$)'];
@@ -1424,7 +1554,7 @@ function addVenda(ev) {
     }
     if (VALOR_VENDA < 0) return;
     var venda = new Venda(peca, VALOR_VENDA);
-    console.log("Nova Venda : "+venda);
+    console.log("Nova Venda : " + venda);
     VALOR_VENDA = -1;
     TUDO.push_venda(venda);
     save_tudo(TUDO);
@@ -1451,7 +1581,7 @@ function atualizarPrecoVenda(ev) {
     var valor = peca.custo_total() * parseFloat(field.value);
     lucro.innerText = "R$" + valor.toFixed(2);
     VALOR_VENDA = valor;
-    console.log("VALOR_VENDA:"+VALOR_VENDA);
+    console.log("VALOR_VENDA:" + VALOR_VENDA);
 }
 function formVendas(parent) {
     var div = document.createElement("div");
@@ -1487,10 +1617,10 @@ function formVendas(parent) {
     preco.addEventListener('change', atualizarPrecoVenda);
     div.appendChild(btn);
 }
-function updateFormVendas() {    
+function updateFormVendas() {
     var pecas = selectPecas("venda-peca");
     console.log("Peças : " + pecas);
-    
+
 }
 
 function loadVendas() {
@@ -1521,6 +1651,15 @@ function loadVendas() {
         cell = document.createElement('td');
         row.appendChild(cell);
         cell.appendChild(document.createTextNode((100 * venda.margem_de_lucro()).toFixed(2)));
+        cell = document.createElement('td');
+
+        var btn = document.createElement("button");
+        btn.textContent = "Remover";
+        btn.value = "venda" + v;
+        addEventListeners(btn, delete_item);
+        cell.appendChild(btn);
+        row.appendChild(cell);
+
         tbody.appendChild(row);
 
     }
