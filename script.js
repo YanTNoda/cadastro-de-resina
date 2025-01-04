@@ -297,14 +297,94 @@ function delete_item(ev) {
             break;
         default:
             alert("Desconhecido:" + groups[1]);
-            break;
+            return;
     }
     save_tudo(TUDO);
     updateApp();
 }
 
 
+function exportar_tudo(ev){
+    ev.stopImmediatePropagation();
+    console.log(ev);
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(TUDO));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", "precificacao.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+function adicionar(tudo){
+    console.log("Adicionando");
+    if(typeof(tudo)!=typeof(TUDO))return;
+    for(var forn in tudo.fornecedores)TUDO.push_fornecedor(tudo.fornecedores[forn]);
+    for(var res in tudo.resinas)TUDO.push_resina(tudo.resinas[res]);
+    for(var pig in tudo.pigmentos)TUDO.push_pigmento(tudo.pigmentos[pig]);
+    for(var mol in tudo.moldes)TUDO.push_molde(tudo.moldes[mol]);
+    for(var xtra in tudo.extras)TUDO.push_extra(tudo.extras[xtra]);
+    for(var func in tudo.funcionarios)TUDO.push_funcionario(tudo.funcionarios[func]);
+    for(var peca in tudo.pecas)TUDO.push_peca(tudo.pecas[peca]);
+    for(var venda in tudo.vendas)TUDO.push_venda(tudo.vendas[venda]);
+    console.log("Adicionado");
+    save_tudo(TUDO);
+    updateApp();    
+}
+function input_change(ev){
+    ev.stopImmediatePropagation();    
+    console.log(ev, ev.target);
+    var files = ev.target.files;
+    if (files === null) return;
+    console.log("File>");
+    console.log(files);
+    
+    const reader = new FileReader();
+    reader.addEventListener('load', (event) => {
+        console.log("FileReader:Load",event.target.result);
+        var json = reader.result;
+        if(json === null)return;
+        console.log(json);
+        try{
+            json = JSON.parse(json);
+            json = Object.assign(new Tudo,json);
+        }catch(e){
+            return;
+        }
+        console.log("Importou o arquivo",json);
+        for(;;){
+            if(confirm("Deseja adicionar dados aos já existentes?"))
+            {
+                adicionar(json);
+                break;
+            }
+            if(confirm("Deseja substituir todos os dados?")){
+                TUDO = json;
+                save_tudo(TUDO);
+                updateApp();
+                break;
+            }
+            if(confirm("Cancelar a importação de dados?")){
+                break;
+            }
+        }
+    });
+    reader.readAsText(files[0]);
+}
 
+
+function importar_tudo(ev){
+    ev.stopImmediatePropagation();
+    console.log(ev);
+    var fileInput = document.createElement('input');
+    fileInput.className='file-input';
+    fileInput.type = 'file';
+    fileInput.id='import';
+    fileInput.addEventListener('change',input_change);
+    APP.appendChild(fileInput);
+    fileInput.click();
+    App.removeChild(fileInput);
+
+}
 
 function addFornecedor(ev) {
     ev.stopImmediatePropagation();
@@ -364,8 +444,9 @@ function loadFornecedores() {
 
         cell = document.createElement('td');
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "fornecedor" + f;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -651,8 +732,9 @@ function loadResinas() {
         cell = document.createElement('td');
 
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "resina" + f;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -783,8 +865,9 @@ function loadPigmentos() {
         cell = document.createElement('td');
 
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "pigmento" + f;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -934,8 +1017,9 @@ function loadMoldes() {
         cell = document.createElement('td');
 
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "molde" + f;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1051,8 +1135,9 @@ function loadExtras() {
         cell = document.createElement('td');
 
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "extra" + f;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1157,8 +1242,9 @@ function loadFuncionarios() {
         cell = document.createElement('td');
 
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "funcionario" + f;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1504,8 +1590,9 @@ function loadPecas() {
         cell = document.createElement('td');
 
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "peca" + f;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1654,8 +1741,9 @@ function loadVendas() {
         cell = document.createElement('td');
 
         var btn = document.createElement("button");
-        btn.textContent = "Remover";
+        btn.textContent = "X";
         btn.value = "venda" + v;
+        btn.className='delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1678,21 +1766,49 @@ function loadVendas() {
     APP.appendChild(div);
 
 }
+
+function loadFooter(){
+    var antigo = document.getElementById('footer');
+    if (antigo !== null) {
+        antigo.remove();
+    }
+    var div = document.createElement('div');
+    div.id = "footer";
+    div.className = "footer";
+    var importar = document.createElement("button");
+    var exportar = document.createElement("button");
+    
+    importar.innerText = 'Importar';
+    exportar.innerText = "Exportar";
+
+    addEventListeners(importar,importar_tudo);
+    addEventListeners(exportar,exportar_tudo);
+
+    div.appendChild(importar);
+    div.appendChild(exportar);
+    APP.appendChild(div);
+}
+
 function updateApp() {
-    loadFornecedores();
-    if (TUDO.fornecedores.length == 0) return;
-    loadResinas();
-    loadPigmentos();
-    loadMoldes();
-    loadExtras();
-    loadFuncionarios();
-    if (TUDO.resinas.length == 0 ||//
-        TUDO.pigmentos.length == 0 ||//
-        TUDO.moldes.length == 0 ||//
-        TUDO.funcionarios.length == 0) return;
-    loadPecas();
-    if (TUDO.pecas.length == 0) return;
-    loadVendas();
+    for (; ;) {
+
+        loadFornecedores();
+        if (TUDO.fornecedores.length == 0) break;
+        loadResinas();
+        loadPigmentos();
+        loadMoldes();
+        loadExtras();
+        loadFuncionarios();
+        if (TUDO.resinas.length == 0 ||//
+            TUDO.pigmentos.length == 0 ||//
+            TUDO.moldes.length == 0 ||//
+            TUDO.funcionarios.length == 0) break;
+        loadPecas();
+        if (TUDO.pecas.length == 0) break;
+        loadVendas();
+        break;
+    }
+    loadFooter();
 }
 function loadPage() {
     show("Carregando");

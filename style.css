@@ -20,7 +20,7 @@ div {
     flex: 1;
     padding: 0.3vmin;
     flex-direction: column;
-    margin:0.4vmin;
+    margin: 0.4vmin;
 }
 
 div.form {
@@ -28,6 +28,23 @@ div.form {
     place-items: auto;
     padding: 1vmin;
 }
+
+div.footer {
+    flex: auto;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    padding: 1vmin;
+}
+
+div.footer>button {
+    width: auto;
+    margin: 0;
+    padding: 2vmin;
+    padding-right: 13vmin;
+    padding-left: 13vmin;
+}
+
 
 div.panel {
     padding: 5vmin;
@@ -37,22 +54,23 @@ div.panel {
 
 table {
     display: block;
-    position: sticky;    
+    position: sticky;
     table-layout: auto;
     max-width: 90vmin;
-    margin: auto;    
+    margin: auto;
 }
 
 thead {
     outline: solid black 0.2vmin;
-    border-radius: 1vmin;        
-    width: 100%;
+    border-radius: 1vmin;
+    width: auto;
     flex: 0 0 auto;
     position: sticky;
 }
 
 tbody {
     outline: solid black 0.2vmin;
+    max-width: 90vmin;
     border-radius: 1vmin;
     flex: 1 1 auto;
     flex-flow: column;
@@ -65,14 +83,16 @@ tr {
     padding: 0.3vmin;
     table-layout: fixed;
     min-width: 70vw;
-    width: fit-content;
+    width: auto;
+    max-width: 90vmin;
 }
 
 td {
     border: solid #f0f0f0aa 0.2vmin;
     border-radius: 1vmin;
     display: flexbox;
-    max-width: 200vmin;
+    width:auto;
+    max-width: 50vmin;
     font-size: 0.75em;
     padding: auto;
     margin: auto;
@@ -80,5 +100,14 @@ td {
 
 th {
     font-size: 0.75rem;
-    
+
+}
+
+
+input.file-input{
+    display:none;
+}
+
+button.delete{
+    background: #dd000077;
 }
