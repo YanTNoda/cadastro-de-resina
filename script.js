@@ -304,66 +304,65 @@ function delete_item(ev) {
 }
 
 
-function exportar_tudo(ev){
+function exportar_tudo(ev) {
     ev.stopImmediatePropagation();
     console.log(ev);
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(TUDO));
     var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", "precificacao.json");
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
-function adicionar(tudo){
+function adicionar(tudo) {
     console.log("Adicionando");
-    if(typeof(tudo)!=typeof(TUDO))return;
-    for(var forn in tudo.fornecedores)TUDO.push_fornecedor(tudo.fornecedores[forn]);
-    for(var res in tudo.resinas)TUDO.push_resina(tudo.resinas[res]);
-    for(var pig in tudo.pigmentos)TUDO.push_pigmento(tudo.pigmentos[pig]);
-    for(var mol in tudo.moldes)TUDO.push_molde(tudo.moldes[mol]);
-    for(var xtra in tudo.extras)TUDO.push_extra(tudo.extras[xtra]);
-    for(var func in tudo.funcionarios)TUDO.push_funcionario(tudo.funcionarios[func]);
-    for(var peca in tudo.pecas)TUDO.push_peca(tudo.pecas[peca]);
-    for(var venda in tudo.vendas)TUDO.push_venda(tudo.vendas[venda]);
+    if (typeof (tudo) != typeof (TUDO)) return;
+    for (var forn in tudo.fornecedores) TUDO.push_fornecedor(tudo.fornecedores[forn]);
+    for (var res in tudo.resinas) TUDO.push_resina(tudo.resinas[res]);
+    for (var pig in tudo.pigmentos) TUDO.push_pigmento(tudo.pigmentos[pig]);
+    for (var mol in tudo.moldes) TUDO.push_molde(tudo.moldes[mol]);
+    for (var xtra in tudo.extras) TUDO.push_extra(tudo.extras[xtra]);
+    for (var func in tudo.funcionarios) TUDO.push_funcionario(tudo.funcionarios[func]);
+    for (var peca in tudo.pecas) TUDO.push_peca(tudo.pecas[peca]);
+    for (var venda in tudo.vendas) TUDO.push_venda(tudo.vendas[venda]);
     console.log("Adicionado");
     save_tudo(TUDO);
-    updateApp();    
+    updateApp();
 }
-function input_change(ev){
-    ev.stopImmediatePropagation();    
+function input_change(ev) {
+    ev.stopImmediatePropagation();
     console.log(ev, ev.target);
     var files = ev.target.files;
     if (files === null) return;
     console.log("File>");
     console.log(files);
-    
+
     const reader = new FileReader();
     reader.addEventListener('load', (event) => {
-        console.log("FileReader:Load",event.target.result);
+        console.log("FileReader:Load", event.target.result);
         var json = reader.result;
-        if(json === null)return;
+        if (json === null) return;
         console.log(json);
-        try{
+        try {
             json = JSON.parse(json);
-            json = Object.assign(new Tudo,json);
-        }catch(e){
+            json = Object.assign(new Tudo, json);
+        } catch (e) {
             return;
         }
-        console.log("Importou o arquivo",json);
-        for(;;){
-            if(confirm("Deseja adicionar dados aos já existentes?"))
-            {
+        console.log("Importou o arquivo", json);
+        for (; ;) {
+            if (confirm("Deseja adicionar dados aos já existentes?")) {
                 adicionar(json);
                 break;
             }
-            if(confirm("Deseja substituir todos os dados?")){
+            if (confirm("Deseja substituir todos os dados?")) {
                 TUDO = json;
                 save_tudo(TUDO);
                 updateApp();
                 break;
             }
-            if(confirm("Cancelar a importação de dados?")){
+            if (confirm("Cancelar a importação de dados?")) {
                 break;
             }
         }
@@ -372,14 +371,14 @@ function input_change(ev){
 }
 
 
-function importar_tudo(ev){
+function importar_tudo(ev) {
     ev.stopImmediatePropagation();
     console.log(ev);
     var fileInput = document.createElement('input');
-    fileInput.className='file-input';
+    fileInput.className = 'file-input';
     fileInput.type = 'file';
-    fileInput.id='import';
-    fileInput.addEventListener('change',input_change);
+    fileInput.id = 'import';
+    fileInput.addEventListener('change', input_change);
     APP.appendChild(fileInput);
     fileInput.click();
     App.removeChild(fileInput);
@@ -420,11 +419,7 @@ function formFornecedor(parent) {
     div.appendChild(btn);
 }
 
-function loadFornecedores() {
-    var antigo = document.getElementById('fornecedores');
-    if (antigo !== null) {
-        antigo.remove();
-    }
+function loadFornecedores() {    
     var div = document.createElement('div');
     div.id = "fornecedores";
     div.className = "panel";
@@ -446,7 +441,7 @@ function loadFornecedores() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "fornecedor" + f;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -700,10 +695,6 @@ function formResina(parent) {
     div.appendChild(btn);
 }
 function loadResinas() {
-    var antigo = document.getElementById('resinas');
-    if (antigo !== null) {
-        antigo.remove();
-    }
     var div = document.createElement('div');
     div.className = "panel";
     div.id = "resinas";
@@ -734,7 +725,7 @@ function loadResinas() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "resina" + f;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -833,10 +824,6 @@ function formPigmento(parent) {
     div.appendChild(btn);
 }
 function loadPigmentos() {
-    var antigo = document.getElementById('pigmentos');
-    if (antigo !== null) {
-        antigo.remove();
-    }
     var div = document.createElement('div');
     div.id = "pigmentos";
     div.className = "panel";
@@ -867,7 +854,7 @@ function loadPigmentos() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "pigmento" + f;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -982,10 +969,6 @@ function formMolde(parent) {
     div.appendChild(btn);
 }
 function loadMoldes() {
-    var antigo = document.getElementById('moldes');
-    if (antigo !== null) {
-        antigo.remove();
-    }
     var div = document.createElement('div');
     div.id = "moldes";
     div.className = "panel";
@@ -1019,7 +1002,7 @@ function loadMoldes() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "molde" + f;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1106,10 +1089,6 @@ function formExtra(parent) {
     div.appendChild(btn);
 }
 function loadExtras() {
-    var antigo = document.getElementById('extras');
-    if (antigo !== null) {
-        antigo.remove();
-    }
     var div = document.createElement('div');
     div.id = "extras";
     div.className = "panel";
@@ -1137,7 +1116,7 @@ function loadExtras() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "extra" + f;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1216,10 +1195,6 @@ function formFuncionarios(parent) {
     div.appendChild(btn);
 }
 function loadFuncionarios() {
-    var antigo = document.getElementById('funcionarios');
-    if (antigo !== null) {
-        antigo.remove();
-    }
     var div = document.createElement('div');
     div.id = "funcionarios";
     div.className = "panel";
@@ -1244,7 +1219,7 @@ function loadFuncionarios() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "funcionario" + f;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1552,10 +1527,6 @@ function updateFormPecas() {
 }
 
 function loadPecas() {
-    var antigo = document.getElementById('pecas');
-    if (antigo !== null) {
-        antigo.remove();
-    }
     var div = document.createElement('div');
     div.id = "pecas";
     div.className = "panel";
@@ -1592,7 +1563,7 @@ function loadPecas() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "peca" + f;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1711,10 +1682,6 @@ function updateFormVendas() {
 }
 
 function loadVendas() {
-    var antigo = document.getElementById('vendas');
-    if (antigo !== null) {
-        antigo.remove();
-    }
     var div = document.createElement('div');
     div.id = "vendas";
     div.className = "panel";
@@ -1743,7 +1710,7 @@ function loadVendas() {
         var btn = document.createElement("button");
         btn.textContent = "X";
         btn.value = "venda" + v;
-        btn.className='delete';
+        btn.className = 'delete';
         addEventListeners(btn, delete_item);
         cell.appendChild(btn);
         row.appendChild(cell);
@@ -1767,31 +1734,35 @@ function loadVendas() {
 
 }
 
-function loadFooter(){
-    var antigo = document.getElementById('footer');
-    if (antigo !== null) {
-        antigo.remove();
-    }
+function loadFooter() {
     var div = document.createElement('div');
     div.id = "footer";
     div.className = "footer";
     var importar = document.createElement("button");
     var exportar = document.createElement("button");
-    
+
     importar.innerText = 'Importar';
     exportar.innerText = "Exportar";
 
-    addEventListeners(importar,importar_tudo);
-    addEventListeners(exportar,exportar_tudo);
+    addEventListeners(importar, importar_tudo);
+    addEventListeners(exportar, exportar_tudo);
 
     div.appendChild(importar);
     div.appendChild(exportar);
     APP.appendChild(div);
 }
-
+function clearApp() {
+    let divs = ['fornecedores', 'resinas', 'pigmentos', 'moldes', 'extras', 'funcionarios', 'pecas', 'vendas','footer'];
+    for (var i in divs) {
+        var div = document.getElementById(divs[i]);
+        if (div !== null) {
+            div.remove();
+        }
+    }
+}
 function updateApp() {
+    clearApp();
     for (; ;) {
-
         loadFornecedores();
         if (TUDO.fornecedores.length == 0) break;
         loadResinas();
