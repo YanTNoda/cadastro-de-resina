@@ -237,7 +237,7 @@ function push_default_vals(t) {
 
 }
 
-let rgxPattern = /(.+)(\d+)/g;
+let rgxPattern = /(.+?)(\d+)/g;
 function delete_item(ev) {
     ev.stopImmediatePropagation();
     console.log(ev, ev.target);
@@ -860,7 +860,7 @@ function loadPigmentos() {
         row.appendChild(cell);
         tbody.appendChild(row);
     }
-    let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)'];
+    let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)',"Remover"];
     for (var i in headers) {
         var th = document.createElement('th');
         th.appendChild(document.createTextNode(headers[i]));
