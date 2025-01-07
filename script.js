@@ -125,7 +125,7 @@ class Tudo {
     constructor(fornecedores, resinas, pigmentos, extras, funcionarios, moldes, pecas, vendas) {
         show("Carregando Tudo");
         this.fornecedores = fornecedores;
-        this.resinas = resinas;
+        this.pigmentos = resinas;
         this.pigmentos = pigmentos;
         this.extras = extras;
         this.funcionarios = funcionarios;
@@ -198,9 +198,170 @@ class Tudo {
         console.log(correto);
         this.resinas = [...correto];
     }
+    remover_pigmentos_duplicados() {
+        let correto = new Set();
+        console.log("\n\n\n", correto, this.pigmentos);
+        for (var p in this.pigmentos) {
+            var presente = false;
+            var pigmento = Object.assign(new Pigmento, this.pigmentos[p]);
+            console.log(p, pigmento, presente, correto);
+            for (const existente of correto) {
+                console.log(pigmento, existente);
+                if (pigmento.fornecedor.nome == existente.fornecedor.nome &&
+                    pigmento.nome == existente.nome &&
+                    pigmento.preco == existente.preco &&
+                    pigmento.peso == existente.peso) {
+                    presente = true;
+                    break;
+                }
+                console.log(typeof (existente), existente, typeof (pigmento), pigmento);
+            }
+            if (!presente) {
+                correto.add(pigmento);
+            }
+        }
+        console.log(correto);
+        this.pigmentos = [...correto];
+    }
+    remover_moldes_duplicados() {
+        let correto = new Set();
+        console.log("\n\n\n", correto, this.moldes);
+        for (var p in this.moldes) {
+            var presente = false;
+            var molde = Object.assign(new Molde, this.moldes[p]);
+            console.log(p, molde, presente, correto);
+            for (const existente of correto) {
+                console.log(molde, existente);
+                if (molde.fornecedor.nome == existente.fornecedor.nome &&
+                    molde.nome == existente.nome &&
+                    molde.preco == existente.preco &&
+                    molde.usos == existente.usos &&
+                    molde.cavidades == existente.cavidades
+                ) {
+                    presente = true;
+                    break;
+                }
+                console.log(typeof (existente), existente, typeof (molde), molde);
+            }
+            if (!presente) {
+                correto.add(molde);
+            }
+        }
+        console.log(correto);
+        this.moldes = [...correto];
+    }
+    remover_extras_duplicados() {
+        let correto = new Set();
+        console.log("\n\n\n", correto, this.extras);
+        for (var e in this.extras) {
+            var presente = false;
+            var extra = Object.assign(new Extra, this.extras[e]);
+            console.log(e, extra, presente, correto);
+            for (const existente of correto) {
+                console.log(extra, existente);
+                if (extra.fornecedor.nome == existente.fornecedor.nome &&
+                    extra.nome == existente.nome &&
+                    extra.preco == existente.preco
+                ) {
+                    presente = true;
+                    break;
+                }
+                console.log(typeof (existente), existente, typeof (extra), extra);
+            }
+            if (!presente) {
+                correto.add(extra);
+            }
+        }
+        console.log(correto);
+        this.extras = [...correto];
+    }
+    remover_funcionarios_duplicados() {
+        let correto = new Set();
+        console.log("\n\n\n", correto, this.funcionarios);
+        for (var f in this.funcionarios) {
+            var presente = false;
+            var funcionario = Object.assign(new Extra, this.funcionarios[f]);
+            console.log(f, funcionario, presente, correto);
+            for (const existente of correto) {
+                console.log(funcionario, existente);
+                if (funcionario.nome == existente.nome &&
+                    funcionario.preco == existente.preco
+                ) {
+                    presente = true;
+                    break;
+                }
+                console.log(typeof (existente), existente, typeof (funcionario), funcionario);
+            }
+            if (!presente) {
+                correto.add(funcionario);
+            }
+        }
+        console.log(correto);
+        this.funcionarios = [...correto];
+    }
+    remover_pecas_duplicadas() {
+        let correto = new Set();
+        console.log("\n\n\n", correto, this.moldes);
+        for (var p in this.pecas) {
+            var presente = false;
+            var peca = Object.assign(new Peca, this.pecas[p]);
+            console.log(p, peca, presente, correto);
+            for (const existente of correto) {
+                console.log(peca, existente);
+                if (peca.nome != existente.nome) continue;
+                if (peca.resina.nome != existente.resina.nome) continue;
+                if (peca.pigmento.nome != existente.pigmento.nome) continue;
+                if (peca.molde.nome != existente.molde.nome) continue;
+                if (peca.extras.length != existente.extras.length) continue;
+                if (peca.funcionario.nome != existente.funcionario.nome) continue;
+                if (peca.peso != existente.peso) continue;
+                if (peca.tempo != existente.tempo) continue;
+                if (peca.paralelo != existente.paralelo) continue;                
+                presente = true;
+                console.log(typeof (existente), existente, typeof (peca), peca);
+                break;
+            }
+            if (!presente) {
+                correto.add(peca);
+            }
+        }
+        console.log(correto);
+        this.pecas = [...correto];
+    }
+    remover_vendas_duplicadas() {
+        let correto = new Set();
+        console.log("\n\n\n", correto, this.vendas);
+        for (var v in this.vendas) {
+            var presente = false;
+            var venda = Object.assign(new Venda, this.vendas[v]);
+            console.log(v, venda, presente, correto);
+            for (const existente of correto) {
+                console.log(venda, existente);
+                if (venda.peca.nome == existente.peca.nome &&
+                    venda.valor_venda == existente.valor_venda
+                ) {
+                    presente = true;
+                    break;
+                }
+                console.log(typeof (existente), existente, typeof (venda), venda);
+            }
+            if (!presente) {
+                correto.add(venda);
+            }
+        }
+        console.log(correto);
+        this.vendas = [...correto];
+    }
+    
     remover_duplicados() {
         this.remover_fornecedores_duplicados();
         this.remover_resinas_duplicadas();
+        this.remover_pigmentos_duplicados();
+        this.remover_moldes_duplicados();
+        this.remover_extras_duplicados();
+        this.remover_funcionarios_duplicados();
+        this.remover_pecas_duplicadas();
+        this.remover_vendas_duplicadas();        
     }
 
 
