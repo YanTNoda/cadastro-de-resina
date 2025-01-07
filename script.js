@@ -1654,6 +1654,7 @@ function formVendas(parent) {
     preco.setAttribute("type", 'range');
     preco.setAttribute("min", '1');
     preco.setAttribute("max", '5');
+    preco.setAttribute('value','2');
     preco.setAttribute("step", '0.005');
 
     var heading = document.createElement("h2");

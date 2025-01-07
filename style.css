@@ -1,9 +1,17 @@
 :root {
     color-scheme: light dark;
+    --text-color: light-dark(#000, #fff);
+    --red-color: light-dark(#ff0000b7, #f00);
+    --accent-color: light-dark(#ff5689b7, #0ec02cad);
+    --background-color: light-dark(#d0d0d0, #000318);
+    --shadow-color: light-dark(#fc8c8c, #1b201d10);
+    --highlight-color: #422e3d30;
+    --gray-color: light-dark(#e6a7a760, #3d3d3433);
+    transition: 2s;
 }
 
 body {
-    background-color:light-dark(#d0d0d0,#0d0d0d);
+    background-color: var(--background-color);
     display: flex;
     flex-direction: column;
     width: 98vw;
@@ -13,19 +21,20 @@ body {
 
 h1,
 h2 {
-    border: solid #00000020 0.2vmin;
+    border: solid var(--shadow-color) 0.2vmin;
     border-radius: 2vmin;
     flex: 1;
     padding: 0.5vmin;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
     align-items: center;
-    align-content: center;    
+    align-content: center;
     margin: 0.5vmin;
 }
 
 
 div {
-    border: solid #00000010 0.2vmin;
+    border: solid var(--shadow-color) 0.2vmin;
     border-radius: 1vmin;
     display: flex;
     flex: 1;
@@ -33,10 +42,11 @@ div {
     flex-direction: column;
     margin: 0.4vmin;
     max-width: 100%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 div#app {
-    border: solid #00000010 0.2vmin;
+    border: solid var(--shadow-color) 0.2vmin;
     margin: 0px;
     width: 100%;
 }
@@ -70,28 +80,30 @@ div.panel {
     margin-bottom: 0.5vmin;
     width: 100%;
     border: none;
+    overflow-x: auto;
 }
 
 table {
-    display: block;
+    display: table;
     position: sticky;
     table-layout: auto;
     width: 100%;
     margin: 0;
-    overflow-x: auto;
+
 }
 
 thead {
-    outline: solid #00000010 0.2vmin;
+    outline: solid light-dark(var(--shadow-color), var(--highlight-color)) 0.3vmin;
     border-radius: 1vmin;
-    width: auto;
+    width: 100%;
     flex: 0 0 auto;
     position: sticky;
 }
 
 tbody {
-    outline: solid #00000010 0.2vmin;
+    outline: solid light-dark(var(--shadow-color), var(--highlight-color)) 0.3vmin;
     max-width: 90vmin;
+    width: 100%;
     border-radius: 1vmin;
     flex: 1 1 auto;
     flex-flow: column;
@@ -99,40 +111,69 @@ tbody {
 }
 
 tr {
-    border: solid light-dark(#00000040,#ffffff40) 0.4vmin;
-    background-color:light-dark(#d0d0d0,#0d0d0d);
+    border: solid light-dark(var(--shadow-color), var(--highlight-color)) 0.4vmin;
+    background-color: var(--background-color);
     border-radius: 1vmin;
     padding: 0.3vmin;
     table-layout: fixed;
     min-width: 70vmin;
-    width: auto;
+    width: 100%;
     max-width: 90vmin;
 }
-tr:nth-child(even){background-color: #f2f2f233;}
+
+tr:nth-child(even) {
+    background-color: var(--gray-color);
+}
 
 
 td {
-    border: solid light-dark(#f0f0f0aa,#0d0d0daa) 0.2vmin;
+    border: solid light-dark(var(--highlight-color), var(--shadow-color)) 0.2vmin;
     border-radius: 1vmin;
     display: flexbox;
     width: auto;
     max-width: 50vmin;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 0.75rem;
+    text-align: center;
     padding: auto;
     margin: auto;
 }
 
+td:nth-child(1) {
+    text-align: justify;
+}
+
 th {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 0.75rem;
+    background-color: var(--gray-color);
 
 }
 
+input#venda-slider {
+    accent-color: var(--accent-color);
+    width: 80%;
+
+}
 
 input.file-input {
     display: none;
 }
 
+button {
+    outline: none;
+    margin: 0.5rem;
+    padding: 2vmin;
+    background: light-dark(var(--shadow-color), var(--highlight-color));
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: var(--text-color);
+    border-radius: 1.5vmin;
+    border: none;
+
+}
+
 button.delete {
-    background: light-dark(#dd000077,#f00);
-    color: light-dark(#fff,#000);
+    background: var(--red-color);
+    color: var(--text-color);
+    font-size: small;
 }
