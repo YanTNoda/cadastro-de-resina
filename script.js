@@ -13,7 +13,7 @@ function addEventListeners(element, f) {
 class Fornecedor {
     constructor(nome) {
         this.nome = nome;
-    }
+    }    
 }
 class Insumo {
     constructor(fornecedor, nome, preco) {
@@ -120,8 +120,10 @@ class Venda {
 
 
 }
+
 class Tudo {
     constructor(fornecedores, resinas, pigmentos, extras, funcionarios, moldes, pecas, vendas) {
+        show("Carregando Tudo");
         this.fornecedores = fornecedores;
         this.resinas = resinas;
         this.pigmentos = pigmentos;
@@ -148,6 +150,32 @@ class Tudo {
     remove_funcionario(index) { this.funcionarios.splice(index, 1); }
     remove_peca(index) { this.pecas.splice(index, 1); }
     remove_venda(index) { this.vendas.splice(index, 1); }
+
+    remover_fornecedores_duplicados() {
+        let correto = new Set();
+        console.log("\n\n\n",correto,this.fornecedores);
+        for (var f in this.fornecedores) {
+            var presente = false;
+            var forn = Object.assign(new Fornecedor, this.fornecedores[f]);
+            console.log(f,forn,presente,correto);
+            for (const existente of correto) {
+                console.log(forn,existente);
+                if (forn.nome  === existente.nome ) {
+                    presente = true;
+                    break;
+                }
+                console.log(typeof(existente),existente,typeof(forn),forn);
+            }
+            if (!presente) {
+                correto.add(forn);
+            }
+        }
+        console.log(correto);
+        this.fornecedores = [...correto];
+    }
+    remover_duplicados() {
+        this.remover_fornecedores_duplicados();
+    }
 
 
 
@@ -196,14 +224,14 @@ function load_tudo() {
     else {
         show("Carregado registro");
         try {
-
-            show(typeof (t)); show(t);
+            console.log(typeof (t), t);
             t = JSON.parse(t);
-            show(typeof (t)); show(t);
+            console.log(typeof (t), t);
             t = Object.assign(new Tudo, t);
-            show(typeof (t)); show(t);
+            console.log(typeof (t), t);
         } catch (e) {
             show("Erro ao carregar dados antigos,gerando novo");
+            console.error(e);
             t = new Tudo([], [], [], [], [], [], [], []);
             save_tudo(t);
         }
@@ -419,7 +447,7 @@ function formFornecedor(parent) {
     div.appendChild(btn);
 }
 
-function loadFornecedores() {    
+function loadFornecedores() {
     var div = document.createElement('div');
     div.id = "fornecedores";
     div.className = "panel";
@@ -860,7 +888,7 @@ function loadPigmentos() {
         row.appendChild(cell);
         tbody.appendChild(row);
     }
-    let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)',"Remover"];
+    let headers = ['Fornecedor', 'Nome', 'Preço(R$)', 'Peso(gramas)', "Remover"];
     for (var i in headers) {
         var th = document.createElement('th');
         th.appendChild(document.createTextNode(headers[i]));
@@ -1654,7 +1682,7 @@ function formVendas(parent) {
     preco.setAttribute("type", 'range');
     preco.setAttribute("min", '1');
     preco.setAttribute("max", '5');
-    preco.setAttribute('value','2');
+    preco.setAttribute('value', '2');
     preco.setAttribute("step", '0.005');
 
     var heading = document.createElement("h2");
@@ -1753,7 +1781,7 @@ function loadFooter() {
     APP.appendChild(div);
 }
 function clearApp() {
-    let divs = ['fornecedores', 'resinas', 'pigmentos', 'moldes', 'extras', 'funcionarios', 'pecas', 'vendas','footer'];
+    let divs = ['fornecedores', 'resinas', 'pigmentos', 'moldes', 'extras', 'funcionarios', 'pecas', 'vendas', 'footer'];
     for (var i in divs) {
         var div = document.getElementById(divs[i]);
         if (div !== null) {
@@ -1763,6 +1791,7 @@ function clearApp() {
 }
 function updateApp() {
     clearApp();
+    TUDO.remover_duplicados();
     for (; ;) {
         loadFornecedores();
         if (TUDO.fornecedores.length == 0) break;
