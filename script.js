@@ -13,7 +13,7 @@ function addEventListeners(element, f) {
 class Fornecedor {
     constructor(nome) {
         this.nome = nome;
-    }    
+    }
 }
 class Insumo {
     constructor(fornecedor, nome, preco) {
@@ -153,18 +153,18 @@ class Tudo {
 
     remover_fornecedores_duplicados() {
         let correto = new Set();
-        console.log("\n\n\n",correto,this.fornecedores);
+        console.log("\n\n\n", correto, this.fornecedores);
         for (var f in this.fornecedores) {
             var presente = false;
             var forn = Object.assign(new Fornecedor, this.fornecedores[f]);
-            console.log(f,forn,presente,correto);
+            console.log(f, forn, presente, correto);
             for (const existente of correto) {
-                console.log(forn,existente);
-                if (forn.nome  === existente.nome ) {
+                console.log(forn, existente);
+                if (forn.nome === existente.nome) {
                     presente = true;
                     break;
                 }
-                console.log(typeof(existente),existente,typeof(forn),forn);
+                console.log(typeof (existente), existente, typeof (forn), forn);
             }
             if (!presente) {
                 correto.add(forn);
@@ -173,8 +173,34 @@ class Tudo {
         console.log(correto);
         this.fornecedores = [...correto];
     }
+    remover_resinas_duplicadas() {
+        let correto = new Set();
+        console.log("\n\n\n", correto, this.resinas);
+        for (var r in this.resinas) {
+            var presente = false;
+            var resina = Object.assign(new Resina, this.resinas[r]);
+            console.log(r, resina, presente, correto);
+            for (const existente of correto) {
+                console.log(resina, existente);
+                if (resina.fornecedor.nome == existente.fornecedor.nome &&
+                    resina.nome == existente.nome &&
+                    resina.preco == existente.preco &&
+                    resina.peso == existente.peso) {
+                    presente = true;
+                    break;
+                }
+                console.log(typeof (existente), existente, typeof (resina), resina);
+            }
+            if (!presente) {
+                correto.add(resina);
+            }
+        }
+        console.log(correto);
+        this.resinas = [...correto];
+    }
     remover_duplicados() {
         this.remover_fornecedores_duplicados();
+        this.remover_resinas_duplicadas();
     }
 
 
