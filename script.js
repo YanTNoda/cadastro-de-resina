@@ -650,7 +650,7 @@ function loadFornecedores() {
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Fornecedores';
-    
+
     var title = document.createElement('div');
     var content = document.createElement('div');
     title.appendChild(heading);
@@ -935,7 +935,14 @@ function loadResinas() {
     div.id = "resinas";
     var heading = document.createElement("h1");
     heading.innerText = 'Resinas';
-    div.appendChild(heading);
+    var title = document.createElement('div');
+    title.appendChild(heading);
+    var content = document.createElement('div');
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -972,12 +979,14 @@ function loadResinas() {
         th.appendChild(document.createTextNode(headers[i]));
         theadrow.appendChild(th);
     }
-    div.appendChild(table);
+    content.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    formResina(div);
+    formResina(content);
+    div.appendChild(title);
+    div.appendChild(content);    
     APP.appendChild(div);
 
 }
@@ -1064,7 +1073,13 @@ function loadPigmentos() {
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Pigmentos';
-    div.appendChild(heading);
+    var title = document.createElement('div');
+    title.appendChild(heading);
+    var content = document.createElement('div');
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -1101,12 +1116,14 @@ function loadPigmentos() {
         th.appendChild(document.createTextNode(headers[i]));
         theadrow.appendChild(th);
     }
-    div.appendChild(table);
+    content.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    formPigmento(div);
+    formPigmento(content);
+    div.appendChild(title);
+    div.appendChild(content);
     APP.appendChild(div);
 
 }
@@ -1209,7 +1226,13 @@ function loadMoldes() {
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Moldes';
-    div.appendChild(heading);
+    var title = document.createElement('div');
+    title.appendChild(heading);
+    var content = document.createElement('div');
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -1252,12 +1275,14 @@ function loadMoldes() {
         th.appendChild(document.createTextNode(headers[i]));
         theadrow.appendChild(th);
     }
-    div.appendChild(table);
+    content.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    formMolde(div);
+    formMolde(content);
+    div.appendChild(title);
+    div.appendChild(content);
     APP.appendChild(div);
 
 }
@@ -1329,7 +1354,14 @@ function loadExtras() {
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Extras';
-    div.appendChild(heading);
+    var title = document.createElement('div');
+    title.appendChild(heading);
+    var content = document.createElement('div');
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
+    
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -1364,12 +1396,14 @@ function loadExtras() {
         th.appendChild(document.createTextNode(headers[i]));
         theadrow.appendChild(th);
     }
-    div.appendChild(table);
+    content.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    formExtra(div);
+    formExtra(content);
+    div.appendChild(title);
+    div.appendChild(content);
     APP.appendChild(div);
 
 }
@@ -1435,7 +1469,13 @@ function loadFuncionarios() {
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Funcionários';
-    div.appendChild(heading);
+    var title = document.createElement('div');
+    title.appendChild(heading);
+    var content = document.createElement('div');
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -1467,12 +1507,14 @@ function loadFuncionarios() {
         th.appendChild(document.createTextNode(headers[i]));
         theadrow.appendChild(th);
     }
-    div.appendChild(table);
+    content.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    formFuncionarios(div);
+    formFuncionarios(content);
+    div.appendChild(title);
+    div.appendChild(content);
     APP.appendChild(div);
 
 }
@@ -1767,7 +1809,14 @@ function loadPecas() {
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Peças';
-    div.appendChild(heading);
+    var title = document.createElement('div');
+    title.appendChild(heading);
+    var content = document.createElement('div');
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -1813,12 +1862,14 @@ function loadPecas() {
         th.appendChild(document.createTextNode(headers[i]));
         theadrow.appendChild(th);
     }
-    div.appendChild(table);
+    content.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    formPecas(div);
+    formPecas(content);
+    div.appendChild(title);
+    div.appendChild(content);
     APP.appendChild(div);
 
 }
@@ -1923,7 +1974,13 @@ function loadVendas() {
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Vendas';
-    div.appendChild(heading);
+    var title = document.createElement('div');
+    title.appendChild(heading);
+    var content = document.createElement('div');
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -1960,12 +2017,14 @@ function loadVendas() {
         th.appendChild(document.createTextNode(headers[i]));
         theadrow.appendChild(th);
     }
-    div.appendChild(table);
+    content.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
-    formVendas(div);
+    formVendas(content);
+    div.appendChild(title);
+    div.appendChild(content);
     APP.appendChild(div);
 
 }
