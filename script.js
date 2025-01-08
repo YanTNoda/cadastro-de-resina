@@ -316,7 +316,7 @@ class Tudo {
                 if (peca.funcionario.nome != existente.funcionario.nome) continue;
                 if (peca.peso != existente.peso) continue;
                 if (peca.tempo != existente.tempo) continue;
-                if (peca.paralelo != existente.paralelo) continue;                
+                if (peca.paralelo != existente.paralelo) continue;
                 presente = true;
                 console.log(typeof (existente), existente, typeof (peca), peca);
                 break;
@@ -352,7 +352,7 @@ class Tudo {
         console.log(correto);
         this.vendas = [...correto];
     }
-    
+
     remover_duplicados() {
         this.remover_fornecedores_duplicados();
         this.remover_resinas_duplicadas();
@@ -361,7 +361,7 @@ class Tudo {
         this.remover_extras_duplicados();
         this.remover_funcionarios_duplicados();
         this.remover_pecas_duplicadas();
-        this.remover_vendas_duplicadas();        
+        this.remover_vendas_duplicadas();
     }
 
 
@@ -450,6 +450,14 @@ function push_default_vals(t) {
     var venda = new Venda(peca, 90);
     t.push_venda(venda);
 
+}
+function collapser(div) {
+    return (ev) => {
+        ev.stopImmediatePropagation();
+        console.log(ev, ev.target, div.style.display);
+        div.style.display = div.style.display == 'block' ? "none" : "block";
+        console.log(div);
+    }
 }
 
 let rgxPattern = /(.+?)(\d+)/g;
@@ -634,13 +642,22 @@ function formFornecedor(parent) {
     div.appendChild(btn);
 }
 
+
+
 function loadFornecedores() {
     var div = document.createElement('div');
     div.id = "fornecedores";
     div.className = "panel";
     var heading = document.createElement("h1");
     heading.innerText = 'Fornecedores';
-    div.appendChild(heading);
+    
+    var title = document.createElement('div');
+    var content = document.createElement('div');
+    title.appendChild(heading);
+    content.className = "content";
+    content.style.display = 'none';
+    addEventListeners(heading, collapser(content));
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -662,13 +679,16 @@ function loadFornecedores() {
         row.appendChild(cell);
         tbody.appendChild(row);
     }
-    div.appendChild(table);
     table.appendChild(thead);
     table.appendChild(tbody);
     thead.appendChild(theadrow);
     theadrow.appendChild(th);
     th.appendChild(document.createTextNode("Nome"));
-    formFornecedor(div);
+    content.appendChild(table);
+
+    div.appendChild(title);
+    div.appendChild(content);
+    formFornecedor(content);
     APP.appendChild(div);
 }
 

@@ -7,7 +7,8 @@
     --shadow-color: light-dark(#fc8c8c, #1b201d10);
     --highlight-color: #422e3d30;
     --gray-color: light-dark(#e6a7a760, #3d3d3433);
-    transition: 2s;
+    transition: height 4s;
+
 }
 
 body {
