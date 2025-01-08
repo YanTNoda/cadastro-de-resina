@@ -1,9 +1,13 @@
 let APP;
 let TUDO;
-let EVENTS = ['touchend'];
+let EVENTS = isMobile()?['touchend']:['pointerup'];
 let EXTRAS_LIST = [];
 let VALOR_VENDA = -1;
 
+function isMobile() {
+    const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+    return regex.test(navigator.userAgent);
+  }
 function addEventListeners(element, f) {
     for (var i in EVENTS) {
         element.addEventListener(EVENTS[i], f);
