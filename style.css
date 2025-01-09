@@ -1,10 +1,10 @@
 :root {
     color-scheme: light dark;
-    --text-color: light-dark(#000, #fff);
+    --text-color:  #fff;
     --red-color: light-dark(#ff0000b7, #f00);
     --accent-color: light-dark(#ff5689b7, #0ec02cad);
     --background-color: light-dark(#d0d0d0, #000318);
-    --shadow-color: light-dark(#fc8c8c, #1b201d10);
+    --shadow-color: light-dark(#fc8c8ce0, #1b201d10);
     --highlight-color: #422e3d30;
     --gray-color: light-dark(#e6a7a760, #3d3d3433);
     transition: height 4s;
@@ -21,18 +21,26 @@ body {
 }
 
 h1,
-h2 {
+h2,
+h3 {
     border: solid var(--shadow-color) 0.2vmin;
     border-radius: 2vmin;
     flex: 1;
     padding: 0.5vmin;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
+    user-select: none;
     align-items: center;
     align-content: center;
     margin: 0.5vmin;
+    color:white;
 }
-
+body>h1{
+    background-image: linear-gradient(to right,var(--gray-color),var(--shadow-color),var(--gray-color));;
+}
+h2{
+    background-image: linear-gradient(to right,var(--gray-color),var(--shadow-color),var(--gray-color));
+}
 
 div {
     border: solid var(--shadow-color) 0.2vmin;
@@ -50,6 +58,23 @@ div#app {
     border: solid var(--shadow-color) 0.2vmin;
     margin: 0px;
     width: 100%;
+}
+
+div.panel {
+    padding: 1vmin;
+    margin-top: 1vmin;
+    margin-bottom: 0.5vmin;
+    width: 100%;
+    border: none;
+    overflow-x: auto;
+}
+div.title {
+    padding: 1vmin;
+    margin-top: 1vmin;
+    margin-bottom: 0.5vmin;
+    width: auto;
+    border: none;
+    background-image: linear-gradient(to right,var(--gray-color),var(--shadow-color),var(--gray-color));
 }
 
 div.form {
@@ -75,14 +100,7 @@ div.footer>button {
 }
 
 
-div.panel {
-    padding: 1vmin;
-    margin-top: 1vmin;
-    margin-bottom: 0.5vmin;
-    width: 100%;
-    border: none;
-    overflow-x: auto;
-}
+
 
 table {
     display: table;

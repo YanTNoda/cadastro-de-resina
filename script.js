@@ -1,13 +1,13 @@
 let APP;
 let TUDO;
-let EVENTS = isMobile()?['touchend']:['pointerup'];
+let EVENTS = isMobile() ? ['touchend'] : ['pointerup'];
 let EXTRAS_LIST = [];
 let VALOR_VENDA = -1;
 
 function isMobile() {
     const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
     return regex.test(navigator.userAgent);
-  }
+}
 function addEventListeners(element, f) {
     for (var i in EVENTS) {
         element.addEventListener(EVENTS[i], f);
@@ -656,7 +656,10 @@ function loadFornecedores() {
     heading.innerText = 'Fornecedores';
 
     var title = document.createElement('div');
+    
+    
     var content = document.createElement('div');
+    title.className = 'title';
     title.appendChild(heading);
     content.className = "content";
     content.style.display = 'none';
@@ -940,6 +943,7 @@ function loadResinas() {
     var heading = document.createElement("h1");
     heading.innerText = 'Resinas';
     var title = document.createElement('div');
+    title.className = 'title';    
     title.appendChild(heading);
     var content = document.createElement('div');
     content.className = "content";
@@ -990,7 +994,7 @@ function loadResinas() {
     theadrow.appendChild(th);
     formResina(content);
     div.appendChild(title);
-    div.appendChild(content);    
+    div.appendChild(content);
     APP.appendChild(div);
 
 }
@@ -1078,6 +1082,8 @@ function loadPigmentos() {
     var heading = document.createElement("h1");
     heading.innerText = 'Pigmentos';
     var title = document.createElement('div');
+    title.className = 'title';
+    
     title.appendChild(heading);
     var content = document.createElement('div');
     content.className = "content";
@@ -1231,6 +1237,8 @@ function loadMoldes() {
     var heading = document.createElement("h1");
     heading.innerText = 'Moldes';
     var title = document.createElement('div');
+    title.className = 'title';
+    
     title.appendChild(heading);
     var content = document.createElement('div');
     content.className = "content";
@@ -1359,13 +1367,15 @@ function loadExtras() {
     var heading = document.createElement("h1");
     heading.innerText = 'Extras';
     var title = document.createElement('div');
+    title.className = 'title';
+    
     title.appendChild(heading);
     var content = document.createElement('div');
     content.className = "content";
     content.style.display = 'none';
     addEventListeners(heading, collapser(content));
 
-    
+
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var theadrow = document.createElement('tr');
@@ -1474,6 +1484,8 @@ function loadFuncionarios() {
     var heading = document.createElement("h1");
     heading.innerText = 'Funcionários';
     var title = document.createElement('div');
+    title.className = 'title';
+    
     title.appendChild(heading);
     var content = document.createElement('div');
     content.className = "content";
@@ -1814,6 +1826,8 @@ function loadPecas() {
     var heading = document.createElement("h1");
     heading.innerText = 'Peças';
     var title = document.createElement('div');
+    title.className = 'title';
+    
     title.appendChild(heading);
     var content = document.createElement('div');
     content.className = "content";
@@ -1979,6 +1993,8 @@ function loadVendas() {
     var heading = document.createElement("h1");
     heading.innerText = 'Vendas';
     var title = document.createElement('div');
+    title.className = 'title';
+    
     title.appendChild(heading);
     var content = document.createElement('div');
     content.className = "content";
